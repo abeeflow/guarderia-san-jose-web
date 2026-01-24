@@ -8,17 +8,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-6">
             <Link to="/" className="flex items-center gap-4 text-white">
-              <div className="size-8">
-                <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                  <path 
-                    clipRule="evenodd" 
-                    d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" 
-                    fill="white" 
-                    fillRule="evenodd"
-                  />
-                </svg>
+              <div className="h-10 w-auto">
+                <img src="/logo.png" alt="Logo" className="h-full w-auto object-contain" />
               </div>
-              <h2 className="text-xl font-extrabold tracking-tight">San Jose Kindergarten</h2>
+              <h2 className="text-xl font-extrabold tracking-tight">Guardería Jardín Bilingüe San José</h2>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
               Dedicados a proporcionar educacion bilingue de alta calidad desde 1998. Nutriendo los corazones y mentes de la proxima generacion.
@@ -76,7 +69,7 @@ export default function Footer() {
         </div>
         
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-gray-500">
-          <p>&copy; 2024 San Jose Bilingual Kindergarten. Todos los derechos reservados.</p>
+          <p>&copy; 2024 Guardería Jardín Bilingüe San José. Todos los derechos reservados.</p>
           <div className="flex gap-6">
             <a className="hover:text-white" href="#">Politica de Privacidad</a>
             <a className="hover:text-white" href="#">Terminos de Servicio</a>

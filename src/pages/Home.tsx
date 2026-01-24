@@ -1,207 +1,294 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import EventsSection from '../components/EventsSection';
+
+const programs = [
+  {
+    id: 1,
+    title: "Educación Temprana",
+    age: "De 0 meses a 1 año",
+    image: "/programas_1.png",
+    description: "Desarrollo sensorial temprano y apego seguro para bebes con acompañamiento de sus padres.",
+    icon: "child_care",
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-50"
+  },
+  {
+    id: 2,
+    title: "Cuna",
+    age: "1 y 2 años",
+    image: "/programas_2.png",
+    description: "Exploración Sensorial y desarrollo neuromotor a través de un vinculo afectivo y seguro.",
+    icon: "baby_changing_station",
+    iconColor: "text-indigo-600",
+    iconBg: "bg-indigo-50"
+  },
+  {
+    id: 3,
+    title: "Jardín",
+    age: "De 3 a 5 años",
+    image: "/programas_3.png",
+    description: "Desarrollo integral de los niños mediante el juego fortaleciendo la autonomía, el lenguaje, el pensamiento lógico, la expresión emocional y la convivencia.",
+    icon: "school",
+    iconColor: "text-green-600",
+    iconBg: "bg-green-50"
+  },
+  {
+    id: 4,
+    title: "Summer School",
+    age: "Todas las edades",
+    image: "/programas_4.png",
+    description: "Talleres con actividades temáticas al aire libre, artes creativas y juegos acuáticos para mantener la mente activa todo el verano.",
+    icon: "wb_sunny",
+    iconColor: "text-yellow-500",
+    iconBg: "bg-yellow-50"
+  }
+];
+
+const projectItems = [
+  {
+    id: 1,
+    text: "ENFOQUE EN EL DESARROLLO SOCIOEMOCIONAL",
+    icon: "psychology",
+    color: "text-orange-500",
+    borderColor: "border-orange-200",
+    hoverBorder: "hover:border-orange-400",
+    bg: "bg-orange-50",
+    shadow: "shadow-orange-100"
+  },
+  {
+    id: 2,
+    text: "APRENDIZAJE LÚDICO Y CREATIVO",
+    icon: "star",
+    color: "text-cyan-500",
+    borderColor: "border-cyan-200",
+    hoverBorder: "hover:border-cyan-400",
+    bg: "bg-cyan-50",
+    shadow: "shadow-cyan-100"
+  },
+  {
+    id: 3,
+    text: "PROGRAMA DE PSICOMOTRICIDAD TEMPRANA",
+    icon: "directions_run",
+    color: "text-green-500",
+    borderColor: "border-green-200",
+    hoverBorder: "hover:border-green-400",
+    bg: "bg-green-50",
+    shadow: "shadow-green-100"
+  },
+  {
+    id: 4,
+    text: "CLASES DE MÚSICA Y ARTE",
+    icon: "music_note",
+    color: "text-purple-500",
+    borderColor: "border-purple-200",
+    hoverBorder: "hover:border-purple-400",
+    bg: "bg-purple-50",
+    shadow: "shadow-purple-100"
+  }
+];
+
+
 
 export default function Home() {
+
+
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 py-12 lg:py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="order-2 lg:order-1 flex flex-col gap-8">
-            <div className="flex flex-col gap-4">
-              <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest rounded-full w-max">
-                Excelencia Bilingue
-              </span>
-              <h1 className="text-[#111118] text-4xl lg:text-6xl font-black leading-tight tracking-[-0.03em]">
-                Formando Lideres Bilingues para el Manana
-              </h1>
-              <p className="text-[#5f5f8c] text-lg leading-relaxed max-w-[500px]">
-                San Jose Bilingual Kindergarten ofrece un ambiente seguro, profesional e inspirador donde tu hijo puede crecer, aprender y sobresalir en un entorno bilingue.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <Link 
-                to="/enrollment"
-                className="flex min-w-[160px] items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-base font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
-              >
-                Inscribete Ahora
-              </Link>
-              <button className="flex min-w-[160px] items-center justify-center rounded-lg h-14 px-8 bg-white border border-gray-200 text-[#111118] text-base font-bold hover:bg-gray-50 transition-colors">
-                Programa de Verano
-              </button>
-            </div>
-          </div>
-          <div className="order-1 lg:order-2">
-            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-              <div 
-                className="absolute inset-0 bg-center bg-cover" 
-                style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBdrkFol8zTcGev2LWMQv6RPE4RDYZMTYHMo9p1encV_k_DwCD_sexYeQCrM-XYT4CK3lNTRrWWNqECwVnaVfneSu0JaXvg0oFtkgygBkCJQpPJAbL4SqmqptzrEnP_ImVH89jmdcJXIg3hgfPM7Ye_NIzI5rTqwx76duX8wmuBVbnzHO-y5q0jCrGRRMSAuv2oPOo9WwX4u2yS9II2tyswgHmFMD4pP5nUYgR3hXkEIwjXGuQuMAkceNV58GtW_74kwY2HjEHDeig3")'}}
-              />
-              <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur p-4 rounded-xl flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-lg">
-                  <span className="material-symbols-outlined text-primary">verified</span>
-                </div>
+      <div className="relative w-full h-[600px] lg:h-[750px] flex overflow-hidden">
+        {/* Background Layer Split */}
+        <div className="w-[65%] h-full relative">
+           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_1.png")' }}></div>
+           <div className="absolute inset-0 bg-black/10"></div>
+        </div>
+        <div className="w-[35%] h-full relative hidden md:block">
+           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_2.png")' }}></div>
+           <div className="absolute inset-0 bg-primary/10 backdrop-grayscale-[50%]"></div>
+        </div>
+
+        {/* Floating Main Card */}
+        <div className="absolute inset-0 flex items-center justify-center p-0 lg:p-10 z-20">
+          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl flex overflow-hidden max-w-[1200px] w-full border border-white/50 relative">
+             
+             {/* Text Content (Left Side of Card) */}
+             <div className="flex-1 p-8 lg:p-16 flex flex-col justify-center gap-6 lg:gap-8">
                 <div>
-                  <p className="text-xs font-bold text-gray-500 uppercase">Instalacion Licenciada</p>
-                  <p className="text-sm font-bold">Acreditacion Ministerial</p>
+                  <span className="inline-block px-4 py-1.5 bg-blue-50 text-primary text-xs font-black uppercase tracking-widest rounded-full w-max border border-blue-100 mb-4">
+                    DONDE TODO COMIENZA
+                  </span>
+                  <h1 className="text-[#111118] text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.1] tracking-tight">
+                    Sus Primeros Pasos hacia un <br className="hidden lg:block" />
+                    <span className="text-primary">Futuro Brillante</span>
+                  </h1>
                 </div>
-              </div>
-            </div>
+                
+                <p className="text-[#5f5f8c] text-lg leading-relaxed font-medium max-w-xl">
+                  Ofrecemos un ambiente seguro y acogedor, donde apoyamos el desarrollo integral de los niños y niñas en sus primeros años.
+                </p>
+                
+
+                <div className="pt-0">
+                  <p className="text-2xl lg:text-3xl font-serif italic text-primary tracking-wide">
+                    "Donde su niño es lo más importante"
+                  </p>
+                </div>
+
+                {/* Badge inside card for mobile, hidden on desktop if desired, or kept as detail */}
+                <div className="flex items-center gap-3 mt-4 pt-6 border-t border-gray-100">
+                   <span className="material-symbols-outlined text-green-500 text-3xl">verified_user</span>
+                   <div>
+                      <p className="text-xs font-black text-gray-400 uppercase tracking-wider">INSTALACIÓN ACREDITADA</p>
+                      <p className="text-sm font-bold text-gray-800">Ministerio de Educación</p>
+                   </div>
+                </div>
+             </div>
+
+             {/* Image Content (Right Side of Card - img_portada_3) */}
+             <div className="w-[45%] relative hidden lg:block">
+                {/* Slanted divider effect */}
+                <div className="absolute inset-y-0 left-0 w-12 bg-white/95 transform -skew-x-6 origin-bottom -ml-6 z-10"></div>
+                
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_3.png")' }}></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+             </div>
           </div>
         </div>
       </div>
 
       {/* Services Section */}
-      <section id="programs" className="bg-white py-20 border-y border-gray-100">
+      <section className="py-16 lg:py-24 bg-white scroll-mt-28" id="programs">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-          <div className="flex flex-col items-center text-center mb-16 gap-4">
-            <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight">Nuestros Programas Principales</h2>
-            <p className="text-[#5f5f8c] max-w-2xl">
-              Disenados por expertos en educacion para fomentar la adquisicion natural del lenguaje y los hitos de desarrollo holistico desde el nacimiento hasta los seis anos.
+          {/* Header de la sección */}
+          <div className="flex flex-col items-center text-center gap-6 mb-16">
+            <div className="relative">
+              <h2 className="text-[#111118] text-3xl lg:text-5xl font-extrabold tracking-tight">
+                Nuestros Programas Educativos
+              </h2>
+              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-1/2 h-1 bg-blue-700 rounded-full"></div>
+            </div>
+            
+            <p className="text-[#5f5f8c] text-lg leading-relaxed max-w-4xl mt-4 text-justify md:text-center">
+              Nuestros programas educativos están diseñados para acompañar el desarrollo integral de los niños 
+              desde sus primeros meses de vida. Brindamos Educación Temprana, Cuna, Jardín y Guardería, en un 
+              entorno seguro, donde se promueven el aprendizaje, el juego, la autonomía y los valores, respetando 
+              el ritmo y las necesidades de cada niño.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Nursery Card */}
-            <div className="flex flex-col gap-6 rounded-2xl border border-gray-100 bg-white p-8 hover:shadow-xl hover:border-primary/20 transition-all group">
-              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-blue-50 text-primary group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined">child_care</span>
+
+          {/* Grid de Programas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {programs.map((program) => (
+              <div key={program.id} className="flex flex-col gap-4 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 group">
+                
+                {/* Encabezado de la tarjeta: Icono y Títulos */}
+                <div className="flex items-start gap-4 mb-2">
+                  <div className={`w-12 h-12 flex items-center justify-center rounded-xl ${program.iconBg} ${program.iconColor} shrink-0`}>
+                    <span className="material-symbols-outlined text-2xl">{program.icon}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-[#111118] text-xl font-bold leading-tight">{program.title}</h3>
+                    <p className="text-[#5f5f8c] text-xs font-semibold uppercase tracking-wide mt-1">
+                      {program.age}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Imagen */}
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-md group-hover:shadow-lg transition-all my-2">
+                  <img 
+                    src={program.image} 
+                    alt={program.title} 
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+
+                {/* Descripción */}
+                <div className="flex-1">
+                  <p className="text-[#5f5f8c] text-sm leading-relaxed text-justify">
+                    {program.description}
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-bold">Guarderia</h3>
-                <p className="text-[#5f5f8c] text-sm leading-relaxed">
-                  Desarrollo sensorial temprano y vinculacion segura para bebes en un ambiente tranquilo.
-                </p>
-              </div>
-              <a className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all" href="#">
-                Saber mas <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </a>
-            </div>
-            
-            {/* Pre-K Card */}
-            <div className="flex flex-col gap-6 rounded-2xl border border-gray-100 bg-white p-8 hover:shadow-xl hover:border-primary/20 transition-all group">
-              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-orange-50 text-orange-500 group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined">menu_book</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-bold">Pre-Kinder</h3>
-                <p className="text-[#5f5f8c] text-sm leading-relaxed">
-                  Introduccion a fundamentos bilingues a traves del juego, musica y narracion interactiva.
-                </p>
-              </div>
-              <a className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all" href="#">
-                Saber mas <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </a>
-            </div>
-            
-            {/* Kindergarten Card */}
-            <div className="flex flex-col gap-6 rounded-2xl border border-gray-100 bg-white p-8 hover:shadow-xl hover:border-primary/20 transition-all group">
-              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-green-50 text-green-600 group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined">school</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-bold">Kinder</h3>
-                <p className="text-[#5f5f8c] text-sm leading-relaxed">
-                  Curriculo avanzado enfocado en alfabetizacion, matematicas y habilidades de liderazgo social.
-                </p>
-              </div>
-              <a className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all" href="#">
-                Saber mas <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </a>
-            </div>
-            
-            {/* Summer Camp Card */}
-            <div className="flex flex-col gap-6 rounded-2xl border border-gray-100 bg-white p-8 hover:shadow-xl hover:border-primary/20 transition-all group">
-              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-yellow-50 text-yellow-600 group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined">wb_sunny</span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-bold">Campamento de Verano</h3>
-                <p className="text-[#5f5f8c] text-sm leading-relaxed">
-                  Actividades tematicas al aire libre y artes creativas para mantener la mente activa todo el verano.
-                </p>
-              </div>
-              <a className="mt-auto text-primary text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all" href="#">
-                Saber mas <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </a>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Upcoming Events */}
-      <section className="py-20">
+      {/* Educational Project Section */}
+      <section className="py-10 lg:py-12 bg-[#f5f5f8] scroll-mt-28" id="educational-project">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-3xl font-extrabold tracking-tight">Proximos Eventos</h2>
-              <p className="text-[#5f5f8c]">Unete a nuestra comunidad y mantente informado sobre la vida escolar.</p>
-            </div>
-            <button className="text-primary font-bold flex items-center gap-2 hover:underline">
-              Ver Todos los Eventos <span className="material-symbols-outlined">calendar_month</span>
-            </button>
+          
+          {/* Main Title */}
+          <div className="text-center mb-6">
+            <h2 className="text-[#111118] text-3xl lg:text-4xl font-extrabold tracking-tight">
+              Conócenos
+            </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Event 1 */}
-            <div className="bg-white rounded-xl overflow-hidden border border-gray-100 group shadow-sm">
-              <div 
-                className="h-48 bg-center bg-cover overflow-hidden" 
-                style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCLlwwybaHGEyvoBj5R_e3sRloDNsdgZgGpNBdgGdfOlYHxIjEVcQoA21Vz42BUhtzr76M1vYopiwpDgwb1SGH7H3xC3eQzKzzwPoQesB940F-lgloRKXpX507HZY3QmXhG0H1pEGSlA_IKOi_6iUpM7rQkU81P8UE-LKO_URU7yTitOBvmQQ2yXOxe021QlDRChKANkXhGUh3b2Dhq0PHQ8HrxKiTNz7OQZtYfSR_a82tJ015SpJhz99qzgafhVEh0cPj4543seC9y")'}}
-              >
-                <div className="m-4 bg-white/90 backdrop-blur rounded-lg p-2 w-14 text-center">
-                  <p className="text-xs font-black uppercase text-gray-500">Sep</p>
-                  <p className="text-xl font-black text-primary leading-none">15</p>
+
+          {/* Main Top Card */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 lg:p-8 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center">
+              
+              {/* Left Column: Philosophy */}
+              <div className="flex flex-col gap-3 text-center lg:text-left">
+                <h3 className="text-xl font-bold text-[#111118]">Nuestra Filosofía</h3>
+                <p className="text-[#5f5f8c] text-sm lg:text-base font-medium leading-relaxed">
+                  Somos una guardería bilingüe dedicada a potenciar lo mejor de los más pequeños.
+                  Ofrecemos un ambiente seguro y estimulante, centrado en el desarrollo integral y felicidad.
+                </p>
+              </div>
+
+              {/* Middle Column: Team */}
+              <div className="flex flex-col items-center gap-2 text-center border-t lg:border-t-0 lg:border-l lg:border-r border-gray-100 py-6 lg:py-0">
+                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-1">
+                  <span className="material-symbols-outlined text-2xl">diversity_3</span>
+                </div>
+                <h3 className="text-lg font-bold text-[#111118]">Nuestro Equipo</h3>
+                <p className="text-[#5f5f8c] text-sm font-medium">Equipo Docente - Directora</p>
+                
+                <button className="mt-2 bg-[#00a0e3] hover:bg-[#008bc7] text-white font-bold py-2 px-5 rounded-lg text-sm transition-colors shadow-md shadow-blue-200">
+                  Tour Virtual
+                </button>
+              </div>
+
+              {/* Right Column: Facilities */}
+              <div className="flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-400 mb-1">
+                  <span className="material-symbols-outlined text-2xl">domain</span>
+                </div>
+                <h3 className="text-lg font-bold text-[#111118]">Nuestras Instalaciones</h3>
+                <div className="text-[#5f5f8c] text-sm font-medium">
+                  <p>Aulas Modernas y Seguras</p>
+                  <p>Áreas de Juego al Aire Libre</p>
                 </div>
               </div>
-              <div className="p-6 flex flex-col gap-3">
-                <h4 className="text-lg font-bold group-hover:text-primary transition-colors">Dia de Puertas Abiertas</h4>
-                <p className="text-sm text-gray-500 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">schedule</span> 10:00 AM - 02:00 PM
-                </p>
-                <p className="text-sm text-[#5f5f8c]">Una oportunidad para que los nuevos padres recorran nuestras instalaciones y conozcan a nuestro personal docente.</p>
-              </div>
+
             </div>
-            
-            {/* Event 2 */}
-            <div className="bg-white rounded-xl overflow-hidden border border-gray-100 group shadow-sm">
+          </div>
+
+          {/* Grid Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {projectItems.map((item) => (
               <div 
-                className="h-48 bg-center bg-cover overflow-hidden" 
-                style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAf6Ww7nZIIvWcPuh3l5OY2wJQoCvcaHoevMoj2ikkeZObpjTYi9VHpME35Iu5fXdzXPWu5l3p2YAs2P7Xa8EOMgEEPBi5zrCJVvkWmCmDlQx6B2a5Pyqx7eSKDM5HXUwcElkYh8b2KLNshaSqoZsFSaAF6ee4MrkKYpCDUwwAt-efPSSc3iwK5GNJBuwR83218Z_q0L8jBmsHJTfC_MxBb6ISn3Becew0tWA6R1yhtNzwziAq4Eyrx50BtcnVHNkuLJhA8tgskyf9E")'}}
+                key={item.id}
+                className={`group ${item.bg} rounded-2xl p-6 border ${item.borderColor} ${item.hoverBorder} transition-all duration-300 hover:shadow-lg hover:-translate-y-1`}
               >
-                <div className="m-4 bg-white/90 backdrop-blur rounded-lg p-2 w-14 text-center">
-                  <p className="text-xs font-black uppercase text-gray-500">Oct</p>
-                  <p className="text-xl font-black text-primary leading-none">05</p>
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl bg-white ${item.shadow} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                    <span className={`material-symbols-outlined ${item.color} text-2xl`}>{item.icon}</span>
+                  </div>
+                  <h3 className={`text-[#111118] font-bold text-sm lg:text-base leading-tight uppercase tracking-wide`}>
+                    {item.text}
+                  </h3>
                 </div>
               </div>
-              <div className="p-6 flex flex-col gap-3">
-                <h4 className="text-lg font-bold group-hover:text-primary transition-colors">Festival de Otono 2024</h4>
-                <p className="text-sm text-gray-500 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">schedule</span> Evento de Todo el Dia
-                </p>
-                <p className="text-sm text-[#5f5f8c]">Celebrando la temporada con juegos tradicionales, comida y actividades comunitarias.</p>
-              </div>
-            </div>
-            
-            {/* Event 3 */}
-            <div className="bg-white rounded-xl overflow-hidden border border-gray-100 group shadow-sm">
-              <div 
-                className="h-48 bg-center bg-cover overflow-hidden" 
-                style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuC4UIknyZyaTKYq2UF8oMbo08MPohmDcr-xPaGq3AqH2CRJI7dlncBXQItDtNT4Pcz3yDMeeV_EPSpcfZl26KakSMrkyxlfImqdTB70fNC-g6LN8QQTiyIEY9s5UNpJJfI-UA854B-2dOsxyer0sEBcMWdvIcYhWC702xSOc-3nGInNtfrcpdxWKvtZJ27mqFo2XT08IYBw_eYXW8IBaxzyVDFiofDT7yGP3fyR9zlfcYkn3nOL7UbGhQ2gyV85PrbF1fNUnW8jH0JB")'}}
-              >
-                <div className="m-4 bg-white/90 backdrop-blur rounded-lg p-2 w-14 text-center">
-                  <p className="text-xs font-black uppercase text-gray-500">Oct</p>
-                  <p className="text-xl font-black text-primary leading-none">22</p>
-                </div>
-              </div>
-              <div className="p-6 flex flex-col gap-3">
-                <h4 className="text-lg font-bold group-hover:text-primary transition-colors">Taller para Padres</h4>
-                <p className="text-sm text-gray-500 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">schedule</span> 06:00 PM - 07:30 PM
-                </p>
-                <p className="text-sm text-[#5f5f8c]">Una sesion vespertina enfocada en la adquisicion del lenguaje bilingue en el hogar.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
+
+      <EventsSection />
 
       {/* Contact Information Section */}
       <section id="contact" className="bg-background-light py-20">
@@ -250,7 +337,7 @@ export default function Home() {
                 />
                 <div className="z-10 bg-white p-4 rounded-xl shadow-lg border border-primary/20 flex items-center gap-3">
                   <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-                  <p className="font-bold">San Jose Kindergarten</p>
+                  <p className="font-bold">Guardería Jardín Bilingüe San José</p>
                 </div>
               </div>
             </div>

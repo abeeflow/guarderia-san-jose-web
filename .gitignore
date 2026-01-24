@@ -1,3 +1,19 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Production
+dist
+dist-ssr
+build
+out
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+*.local
+
 # Logs
 logs
 *.log
@@ -7,14 +23,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Testing
+coverage
+.nyc_output
 
-# Editor directories and files
+# Editor/IDE
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
 .idea
 .DS_Store
 *.suo
@@ -22,3 +39,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Optional: Ignore package-lock.json if using pnpm exclusively (commented out by default)
+# package-lock.json

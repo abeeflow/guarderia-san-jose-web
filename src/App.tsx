@@ -7,7 +7,7 @@ import Enrollment from './pages/Enrollment';
 function App() {
   return (
     <Router>
-      <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-background-light text-[#111118]">
+      <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-background-light text-[#111118] pt-[81px]">
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
