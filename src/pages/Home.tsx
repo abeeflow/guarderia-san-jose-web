@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <div className="relative w-full min-h-screen flex overflow-hidden">
+      <div id="hero" className="relative w-full min-h-screen flex overflow-hidden">
         {/* Background Layer Split */}
         <div className="w-[65%] relative">
            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_1.png")' }}></div>

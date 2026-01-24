@@ -16,12 +16,12 @@ export default function Header() {
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">
-          <Link 
-            to="/" 
+          <a 
+            href="/#hero"
             className={`text-sm font-semibold hover:text-primary transition-colors ${isActive('/') ? 'text-primary' : 'text-[#111118]'}`}
           >
             Inicio
-          </Link>
+          </a>
           <a className="text-sm font-semibold hover:text-primary transition-colors" href="/#programs">Programas</a>
           <a className="text-sm font-semibold hover:text-primary transition-colors" href="/#educational-project">Nosotros</a>
           <a className="text-sm font-semibold hover:text-primary transition-colors" href="/#events">Eventos</a>
