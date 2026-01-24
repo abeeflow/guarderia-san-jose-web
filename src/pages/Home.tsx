@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import EventsSection from '../components/EventsSection';
 import ProgramsSection from '../components/ProgramsSection';
 import EducationalProjectSection from '../components/EducationalProjectSection';
