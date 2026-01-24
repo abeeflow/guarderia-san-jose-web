@@ -169,7 +169,7 @@ export default function EventsSection() {
 
   return (
     <>
-      <section className="py-20 bg-background-light" id="events">
+      <section className="min-h-screen flex flex-col justify-center py-20 bg-white scroll-mt-[81px]" id="events">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div className="flex flex-col gap-2">
@@ -255,35 +255,33 @@ export default function EventsSection() {
                       alt={`Gallery ${currentImageIndex + 1}`}
                       className="w-full h-full object-cover transition-all duration-500"
                     />
-                    
-                    {/* Controls */}
-                    {selectedEvent.gallery.length > 1 && (
-                      <>
-                        <button 
-                          onClick={prevImage}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md text-gray-700 hover:text-primary transition-all opacity-0 group-hover:opacity-100"
-                        >
-                          <span className="material-symbols-outlined">chevron_left</span>
-                        </button>
-                        <button 
-                          onClick={nextImage}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md text-gray-700 hover:text-primary transition-all opacity-0 group-hover:opacity-100"
-                        >
-                          <span className="material-symbols-outlined">chevron_right</span>
-                        </button>
-                      </>
-                    )}
                   </div>
                   
-                  {/* Dots Indicator */}
+                  {/* Controls & Indicators */}
                   {selectedEvent.gallery.length > 1 && (
-                    <div className="flex justify-center gap-2">
-                      {selectedEvent.gallery.map((_, idx) => (
-                        <div 
-                          key={idx}
-                          className={`h-2 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'bg-primary w-8' : 'bg-gray-300 w-2'}`}
-                        />
-                      ))}
+                    <div className="flex items-center justify-center gap-4 mt-2">
+                      <button 
+                        onClick={prevImage}
+                        className="w-10 h-10 bg-white border border-gray-200 hover:bg-gray-50 rounded-full flex items-center justify-center shadow-sm text-gray-700 hover:text-primary transition-all"
+                      >
+                        <span className="material-symbols-outlined">chevron_left</span>
+                      </button>
+
+                      <div className="flex justify-center gap-2">
+                        {selectedEvent.gallery.map((_, idx) => (
+                          <div 
+                            key={idx}
+                            className={`h-2 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'bg-primary w-8' : 'bg-gray-300 w-2'}`}
+                          />
+                        ))}
+                      </div>
+
+                      <button 
+                        onClick={nextImage}
+                        className="w-10 h-10 bg-white border border-gray-200 hover:bg-gray-50 rounded-full flex items-center justify-center shadow-sm text-gray-700 hover:text-primary transition-all"
+                      >
+                        <span className="material-symbols-outlined">chevron_right</span>
+                      </button>
                     </div>
                   )}
                 </div>

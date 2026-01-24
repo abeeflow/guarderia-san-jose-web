@@ -43,7 +43,7 @@ const projectItems = [
 
 export default function EducationalProjectSection() {
   return (
-    <section className="py-10 lg:py-12 bg-[#f5f5f8] scroll-mt-28" id="educational-project">
+    <section className="min-h-screen flex flex-col justify-center py-10 lg:py-12 bg-[#f5f5f8] scroll-mt-[81px]" id="educational-project">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         
         {/* Main Title */}

@@ -22,9 +22,9 @@ export default function Header() {
           >
             Inicio
           </Link>
-          <a className="text-sm font-semibold hover:text-primary transition-colors" href="#programs">Programas</a>
-          <a className="text-sm font-semibold hover:text-primary transition-colors" href="#educational-project">Nosotros</a>
-          <a className="text-sm font-semibold hover:text-primary transition-colors" href="#contact">Contacto</a>
+          <a className="text-sm font-semibold hover:text-primary transition-colors" href="/#programs">Programas</a>
+          <a className="text-sm font-semibold hover:text-primary transition-colors" href="/#educational-project">Nosotros</a>
+          <a className="text-sm font-semibold hover:text-primary transition-colors" href="/#events">Eventos</a>
         </nav>
         
         <div className="flex items-center gap-4">

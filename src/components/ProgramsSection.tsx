@@ -45,7 +45,7 @@ const programs = [
 
 export default function ProgramsSection() {
   return (
-    <section className="py-16 lg:py-24 bg-white scroll-mt-28" id="programs">
+    <section className="min-h-screen flex flex-col justify-center py-16 lg:py-24 bg-white scroll-mt-[81px]" id="programs">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         {/* Header de la sección */}
         <div className="flex flex-col items-center text-center gap-6 mb-16">
@@ -98,13 +98,13 @@ export default function ProgramsSection() {
                 </p>
               </div>
 
-              {/* Enlace */}
-              <Link 
-                to="/enrollment" 
-                className="mt-auto flex items-center gap-2 text-primary font-bold text-sm group-hover:gap-3 transition-all pt-2"
-              >
-                Saber más <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </Link>
+              {/* Botón Saber más */}
+              <div className="mt-4 pt-2">
+                <Link to="/enrollment" className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:gap-3 transition-all group-hover:text-blue-700">
+                  Saber más 
+                  <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                </Link>
+              </div>
             </div>
           ))}
         </div>
