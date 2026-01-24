@@ -3,14 +3,11 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Cache bust - update this to force rebuild
-ARG CACHEBUST=1
-
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies - force fresh install
+RUN rm -rf node_modules && npm ci
 
 # Copy source code
 COPY . .
