@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Cache bust - update this to force rebuild
+ARG CACHEBUST=1
+
 # Copy package files
 COPY package*.json ./
 
