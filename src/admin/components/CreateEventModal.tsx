@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { X, Calendar, Image as ImageIcon, Plus } from 'lucide-react';
 import AlertModal from './AlertModal';
 import { supabase } from '../../lib/supabase';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 // Define interface matching DB structure locally to avoid circular dependencies
 interface DBEvent {
@@ -369,7 +370,12 @@ export default function CreateEventModal({ isOpen, onClose, onSuccess, eventToEd
                   
                   {formData.image ? (
                     <>
-                      <img src={formData.image} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <OptimizedImage 
+                        src={formData.image} 
+                        alt="Preview" 
+                        className="absolute inset-0 w-full h-full" 
+                        imageClassName="object-cover"
+                      />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <span className="text-white text-sm font-bold">Cambiar imagen</span>
                       </div>
@@ -396,11 +402,16 @@ export default function CreateEventModal({ isOpen, onClose, onSuccess, eventToEd
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
                   {existingGallery.map((url, index) => (
                     <div key={`existing-${index}`} className="relative aspect-square rounded-lg overflow-hidden group border border-gray-200">
-                      <img src={url} alt={`Galería ${index}`} className="w-full h-full object-cover" />
+                      <OptimizedImage 
+                        src={url} 
+                        alt={`Galería ${index}`} 
+                        className="w-full h-full" 
+                        imageClassName="object-cover"
+                      />
                       <button
                         type="button"
                         onClick={() => removeExistingImage(index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10"
                       >
                         <X size={14} />
                       </button>
@@ -408,11 +419,16 @@ export default function CreateEventModal({ isOpen, onClose, onSuccess, eventToEd
                   ))}
                   {newGalleryFiles.map((item, index) => (
                     <div key={`new-${index}`} className="relative aspect-square rounded-lg overflow-hidden group border border-gray-200">
-                      <img src={item.preview} alt={`Nueva ${index}`} className="w-full h-full object-cover" />
+                      <OptimizedImage 
+                        src={item.preview} 
+                        alt={`Nueva ${index}`} 
+                        className="w-full h-full" 
+                        imageClassName="object-cover"
+                      />
                       <button
                         type="button"
                         onClick={() => removeNewImage(index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10"
                       >
                         <X size={14} />
                       </button>

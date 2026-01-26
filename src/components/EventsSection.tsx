@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X, FileText, Calendar } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { OptimizedImage } from './OptimizedImage';
 
 interface DBEvent {
   id: number;
@@ -119,6 +120,24 @@ export default function EventsSection() {
     setCurrentSlideIndex((prev) => (prev - 1 + Math.ceil(events.length / 3)) % Math.ceil(events.length / 3));
   };
 
+  // Preload images for modal navigation
+  useEffect(() => {
+    if (selectedEvent && selectedEvent.gallery.length > 0) {
+      const preloadImage = (src: string) => {
+        const img = new Image();
+        img.src = src;
+      };
+
+      // Preload next image
+      const nextIndex = (currentImageIndex + 1) % selectedEvent.gallery.length;
+      preloadImage(selectedEvent.gallery[nextIndex]);
+      
+      // Preload previous image
+      const prevIndex = (currentImageIndex - 1 + selectedEvent.gallery.length) % selectedEvent.gallery.length;
+      preloadImage(selectedEvent.gallery[prevIndex]);
+    }
+  }, [currentImageIndex, selectedEvent]);
+
   const visibleEvents = events.slice(currentSlideIndex * 3, (currentSlideIndex + 1) * 3);
 
   if (loading) {
@@ -143,11 +162,13 @@ export default function EventsSection() {
                 className="bg-white rounded-xl overflow-hidden border border-gray-100 group shadow-sm cursor-pointer hover:shadow-lg transition-all animate-fade-in-zoom"
                 onClick={() => openModal(event)}
               >
-                <div 
-                  className="h-48 bg-center bg-cover overflow-hidden" 
-                  style={{backgroundImage: `url("${event.img_portada}")`}}
-                >
-                  <div className="m-4 bg-white/90 backdrop-blur rounded-lg p-2 w-14 text-center">
+                <div className="h-48 relative overflow-hidden">
+                  <OptimizedImage
+                    src={event.img_portada || ''}
+                    alt={event.titulo}
+                    className="w-full h-full"
+                  />
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-lg p-2 w-14 text-center z-10 shadow-sm">
                     <p className="text-xs font-black uppercase text-gray-500">{event.month}</p>
                     <p className="text-xl font-black text-primary leading-none">{event.day}</p>
                   </div>
@@ -209,10 +230,12 @@ export default function EventsSection() {
                 <div className="flex flex-col gap-4">
                   <div className="relative group rounded-2xl overflow-hidden aspect-video bg-gray-50 shadow-sm border border-gray-100">
                     {selectedEvent.gallery.length > 0 ? (
-                      <img 
-                        src={selectedEvent.gallery[currentImageIndex]} 
+                      <OptimizedImage
+                        src={selectedEvent.gallery[currentImageIndex]}
                         alt={`Gallery ${currentImageIndex + 1}`}
-                        className="w-full h-full object-contain transition-all duration-500"
+                        className="w-full h-full"
+                        imageClassName="object-contain"
+                        priority={true}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">

@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Download
 } from 'lucide-react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function Dashboard() {
   // Mock data
@@ -136,14 +137,15 @@ export default function Dashboard() {
                  {users.map((user) => (
                    <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
                      <td className="py-5 px-6">
-                       <div className="flex items-center gap-4">
-                         <img 
-                           src={user.image} 
-                           alt={user.name} 
-                           className="w-10 h-10 rounded-lg object-cover"
-                         />
-                         <div>
-                           <p className="font-bold text-gray-900 text-sm">{user.name}</p>
+                        <div className="flex items-center gap-4">
+                          <OptimizedImage 
+                            src={user.image} 
+                            alt={user.name} 
+                            className="w-10 h-10 rounded-lg overflow-hidden" 
+                            imageClassName="object-cover"
+                          />
+                          <div>
+                            <p className="font-bold text-gray-900 text-sm">{user.name}</p>
                            <p className="text-xs text-gray-500">{user.email}</p>
                          </div>
                        </div>
