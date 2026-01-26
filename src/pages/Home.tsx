@@ -1,20 +1,169 @@
+import { useState } from 'react';
 import EventsSection from '../components/EventsSection';
-import ProgramsSection from '../components/ProgramsSection';
-import EducationalProjectSection from '../components/EducationalProjectSection';
+
+const programs = [
+  {
+    id: 1,
+    title: "Educación Temprana",
+    age: "De 0 meses a 1 año",
+    image: "/programas_1.png",
+    description: "Desarrollo sensorial temprano y apego seguro para bebes con acompañamiento de sus padres.",
+    icon: "child_care",
+    iconColor: "text-blue-600",
+    iconBg: "bg-blue-50"
+  },
+  {
+    id: 2,
+    title: "Cuna",
+    age: "1 y 2 años",
+    image: "/programas_2.png",
+    description: "Exploración Sensorial y desarrollo neuromotor a través de un vinculo afectivo y seguro.",
+    icon: "baby_changing_station",
+    iconColor: "text-indigo-600",
+    iconBg: "bg-indigo-50"
+  },
+  {
+    id: 3,
+    title: "Jardín",
+    age: "De 3 a 5 años",
+    image: "/programas_3.png",
+    description: "Desarrollo integral de los niños mediante el juego fortaleciendo la autonomía, el lenguaje, el pensamiento lógico, la expresión emocional y la convivencia.",
+    icon: "school",
+    iconColor: "text-green-600",
+    iconBg: "bg-green-50"
+  },
+  {
+    id: 4,
+    title: "Summer School",
+    age: "Todas las edades",
+    image: "/programas_4.png",
+    description: "Talleres con actividades temáticas al aire libre, artes creativas y juegos acuáticos para mantener la mente activa todo el verano.",
+    icon: "wb_sunny",
+    iconColor: "text-yellow-500",
+    iconBg: "bg-yellow-50"
+  }
+];
+
+const projectItems = [
+  {
+    id: 1,
+    text: "ENFOQUE EN EL DESARROLLO SOCIOEMOCIONAL",
+    icon: "psychology",
+    color: "text-orange-500",
+    borderColor: "border-orange-200",
+    hoverBorder: "hover:border-orange-400",
+    bg: "bg-orange-50",
+    shadow: "shadow-orange-100"
+  },
+  {
+    id: 2,
+    text: "APRENDIZAJE LÚDICO Y CREATIVO",
+    icon: "star",
+    color: "text-cyan-500",
+    borderColor: "border-cyan-200",
+    hoverBorder: "hover:border-cyan-400",
+    bg: "bg-cyan-50",
+    shadow: "shadow-cyan-100"
+  },
+  {
+    id: 3,
+    text: "PROGRAMA DE PSICOMOTRICIDAD TEMPRANA",
+    icon: "directions_run",
+    color: "text-green-500",
+    borderColor: "border-green-200",
+    hoverBorder: "hover:border-green-400",
+    bg: "bg-green-50",
+    shadow: "shadow-green-100"
+  },
+  {
+    id: 4,
+    text: "CLASES DE MÚSICA Y ARTE",
+    icon: "music_note",
+    color: "text-purple-500",
+    borderColor: "border-purple-200",
+    hoverBorder: "hover:border-purple-400",
+    bg: "bg-purple-50",
+    shadow: "shadow-purple-100"
+  }
+];
+
+
+
+// Map Modal Component
+const MapModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  if (!isOpen) return null;
+
+  const mapUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3949.925574972767!2d-79.0345678250959!3d-8.109075791920392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91ad3d9c79e60515%3A0x6d9678170c2d2871!2sCalle%20Las%20Magnolias%20200-204%2C%20Trujillo%2013008!5e0!3m2!1sen!2spe!4v1706300000000!5m2!1sen!2spe";
+  const directMapLink = "https://www.google.com/maps/place/Calle+Las+Magnolias+200-204,+Trujillo+13008";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-white rounded-3xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden shadow-2xl relative animate-fade-in-up" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="p-4 border-b flex items-center justify-between bg-white z-10">
+          <h3 className="text-lg font-bold text-[#111118] flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary">location_on</span>
+            Nuestra Ubicación
+          </h3>
+          <button 
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+          >
+            <span className="material-symbols-outlined text-gray-500 text-sm">close</span>
+          </button>
+        </div>
+
+        {/* Map Iframe */}
+        <div className="flex-1 w-full bg-gray-100 relative">
+          <iframe 
+            src={mapUrl}
+            width="100%" 
+            height="100%" 
+            style={{border:0}} 
+            allowFullScreen={true} 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Google Maps Location"
+          ></iframe>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
+          <button 
+            onClick={onClose}
+            className="px-4 py-2 rounded-xl text-gray-500 font-bold hover:bg-gray-200 transition-colors text-sm"
+          >
+            Cerrar
+          </button>
+          <a 
+            href={directMapLink} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition-colors text-sm flex items-center gap-2 shadow-lg shadow-primary/20"
+          >
+            Abrir en Google Maps
+            <span className="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
 
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <div id="hero" className="relative w-full min-h-screen flex overflow-hidden">
+      <div className="relative w-full h-[600px] lg:h-[750px] flex overflow-hidden">
         {/* Background Layer Split */}
-        <div className="w-[65%] relative">
+        <div className="w-[65%] h-full relative">
            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_1.png")' }}></div>
            <div className="absolute inset-0 bg-black/10"></div>
         </div>
-        <div className="w-[35%] relative hidden md:block">
+        <div className="w-[35%] h-full relative hidden md:block">
            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_2.png")' }}></div>
            <div className="absolute inset-0 bg-primary/10 backdrop-grayscale-[50%]"></div>
         </div>
@@ -24,22 +173,20 @@ export default function Home() {
           <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl flex overflow-hidden max-w-[1200px] w-full border border-white/50 relative">
              
              {/* Text Content (Left Side of Card) */}
-             <div className="flex-1 p-8 lg:p-16 flex flex-col justify-center gap-6 lg:gap-8" style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+             <div className="flex-1 p-8 lg:p-16 flex flex-col justify-center gap-6 lg:gap-8">
                 <div>
                   <span className="inline-block px-4 py-1.5 bg-blue-50 text-primary text-xs font-black uppercase tracking-widest rounded-full w-max border border-blue-100 mb-4">
                     DONDE TODO COMIENZA
                   </span>
-                  <h1 className="text-[#111118] text-4xl lg:text-2xl xl:text-4xl font-black leading-[1.1] tracking-tight">
+                  <h1 className="text-[#111118] text-4xl lg:text-5xl xl:text-6xl font-black leading-[1.1] tracking-tight">
                     Sus Primeros Pasos hacia un <br className="hidden lg:block" />
                     <span className="text-primary">Futuro Brillante</span>
                   </h1>
                 </div>
                 
-                <div className="text-[#5f5f8c] text-sm md:text-base leading-relaxed font-medium max-w-xl space-y-3">
-                  <p>Ofrecemos un ambiente seguro y acogedor, donde apoyamos el desarrollo integral de los niños y niñas en sus primeros años.</p>
-                  <p>Nuestra atención se basa en el juego, el afecto y el respeto, promoviendo la autonomía, la creatividad y la convivencia, colaborando estrechamente con las familias para acompañar cada etapa del crecimiento.</p>
-                  <p>Nuestro compromiso es formar niños felices, seguros y autónomos, preparándolos para el futuro.</p>
-                </div>
+                <p className="text-[#5f5f8c] text-lg leading-relaxed font-medium max-w-xl">
+                  Ofrecemos un ambiente seguro y acogedor, donde apoyamos el desarrollo integral de los niños y niñas en sus primeros años.
+                </p>
                 
 
                 <div className="pt-0">
@@ -71,9 +218,136 @@ export default function Home() {
       </div>
 
       {/* Services Section */}
-      <ProgramsSection />
+      <section className="py-16 lg:py-24 bg-white scroll-mt-28" id="programs">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          {/* Header de la sección */}
+          <div className="flex flex-col items-center text-center gap-6 mb-16">
+            <div className="relative">
+              <h2 className="text-[#111118] text-3xl lg:text-5xl font-extrabold tracking-tight">
+                Nuestros Programas Educativos
+              </h2>
+              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-1/2 h-1 bg-blue-700 rounded-full"></div>
+            </div>
+            
+            <p className="text-[#5f5f8c] text-lg leading-relaxed max-w-4xl mt-4 text-justify md:text-center">
+              Nuestros programas educativos están diseñados para acompañar el desarrollo integral de los niños 
+              desde sus primeros meses de vida. Brindamos Educación Temprana, Cuna, Jardín y Guardería, en un 
+              entorno seguro, donde se promueven el aprendizaje, el juego, la autonomía y los valores, respetando 
+              el ritmo y las necesidades de cada niño.
+            </p>
+          </div>
 
-      <EducationalProjectSection />
+          {/* Grid de Programas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {programs.map((program) => (
+              <div key={program.id} className="flex flex-col gap-4 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 group">
+                
+                {/* Encabezado de la tarjeta: Icono y Títulos */}
+                <div className="flex items-start gap-4 mb-2">
+                  <div className={`w-12 h-12 flex items-center justify-center rounded-xl ${program.iconBg} ${program.iconColor} shrink-0`}>
+                    <span className="material-symbols-outlined text-2xl">{program.icon}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-[#111118] text-xl font-bold leading-tight">{program.title}</h3>
+                    <p className="text-[#5f5f8c] text-xs font-semibold uppercase tracking-wide mt-1">
+                      {program.age}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Imagen */}
+                <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-md group-hover:shadow-lg transition-all my-2">
+                  <img 
+                    src={program.image} 
+                    alt={program.title} 
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+
+                {/* Descripción */}
+                <div className="flex-1">
+                  <p className="text-[#5f5f8c] text-sm leading-relaxed text-justify">
+                    {program.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Educational Project Section */}
+      <section className="py-10 lg:py-12 bg-[#f5f5f8] scroll-mt-28" id="educational-project">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+          
+          {/* Main Title */}
+          <div className="text-center mb-6">
+            <h2 className="text-[#111118] text-3xl lg:text-4xl font-extrabold tracking-tight">
+              Conócenos
+            </h2>
+          </div>
+
+          {/* Main Top Card */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 lg:p-8 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center">
+              
+              {/* Left Column: Philosophy */}
+              <div className="flex flex-col gap-3 text-center lg:text-left">
+                <h3 className="text-xl font-bold text-[#111118]">Nuestra Filosofía</h3>
+                <p className="text-[#5f5f8c] text-sm lg:text-base font-medium leading-relaxed">
+                  Somos una guardería bilingüe dedicada a potenciar lo mejor de los más pequeños.
+                  Ofrecemos un ambiente seguro y estimulante, centrado en el desarrollo integral y felicidad.
+                </p>
+              </div>
+
+              {/* Middle Column: Team */}
+              <div className="flex flex-col items-center gap-2 text-center border-t lg:border-t-0 lg:border-l lg:border-r border-gray-100 py-6 lg:py-0">
+                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-1">
+                  <span className="material-symbols-outlined text-2xl">diversity_3</span>
+                </div>
+                <h3 className="text-lg font-bold text-[#111118]">Nuestro Equipo</h3>
+                <p className="text-[#5f5f8c] text-sm font-medium">Equipo Docente - Directora</p>
+                
+                <button className="mt-2 bg-[#00a0e3] hover:bg-[#008bc7] text-white font-bold py-2 px-5 rounded-lg text-sm transition-colors shadow-md shadow-blue-200">
+                  Tour Virtual
+                </button>
+              </div>
+
+              {/* Right Column: Facilities */}
+              <div className="flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-400 mb-1">
+                  <span className="material-symbols-outlined text-2xl">domain</span>
+                </div>
+                <h3 className="text-lg font-bold text-[#111118]">Nuestras Instalaciones</h3>
+                <div className="text-[#5f5f8c] text-sm font-medium">
+                  <p>Aulas Modernas y Seguras</p>
+                  <p>Áreas de Juego al Aire Libre</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Grid Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {projectItems.map((item) => (
+              <div 
+                key={item.id}
+                className={`group ${item.bg} rounded-2xl p-6 border ${item.borderColor} ${item.hoverBorder} transition-all duration-300 hover:shadow-lg hover:-translate-y-1`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl bg-white ${item.shadow} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                    <span className={`material-symbols-outlined ${item.color} text-2xl`}>{item.icon}</span>
+                  </div>
+                  <h3 className={`text-[#111118] font-bold text-sm lg:text-base leading-tight uppercase tracking-wide`}>
+                    {item.text}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <EventsSection />
 
@@ -93,7 +367,12 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="font-bold">Direccion</p>
-                    <p className="text-sm text-gray-500">123 Calle Educacion, San Jose, Costa Rica</p>
+                    <button 
+                      onClick={() => setIsMapOpen(true)}
+                      className="text-sm text-gray-500 hover:text-primary transition-colors text-left"
+                    >
+                      Calle las Magnolias 200-204, Urb. California, Trujillo
+                    </button>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -116,10 +395,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden h-[400px]">
+            <div 
+              className="bg-white rounded-2xl shadow-xl overflow-hidden h-[400px] cursor-pointer hover:shadow-2xl transition-all hover:scale-[1.01] group"
+              onClick={() => setIsMapOpen(true)}
+            >
               <div className="w-full h-full bg-gray-200 flex items-center justify-center relative">
                 <div 
-                  className="absolute inset-0 bg-center bg-cover opacity-50 grayscale" 
+                  className="absolute inset-0 bg-center bg-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-500" 
                   style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHuy4KvYRzssiaPQHyG1Kp8HahFOTKX4R91snCj3LOaEXX-jDUE8DQNRB6tSzTo9T8Oj9MLNTat3JWIXuJAZj1bVmwnZ5eAXUi0w-P-5sNP4Ps2uPTQkd_9qrK5vfAF5ql12nDRm6Ois1j-D9YT1G_7YrY2kFagcl6xBZo0G-vuhMvmHYD0rE4gPikaMEm7qK0wne01tyeh9q0fRLQ-dzX-7ADjKx4rKuw2cCWzIDeMrLyDwnTY3CIK2xRCJ5v-Jbbh4kNFx4ugdCs")'}}
                 />
                 <div className="z-10 bg-white p-4 rounded-xl shadow-lg border border-primary/20 flex items-center gap-3">
@@ -131,6 +413,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <MapModal isOpen={isMapOpen} onClose={() => setIsMapOpen(false)} />
     </main>
   );
 }
