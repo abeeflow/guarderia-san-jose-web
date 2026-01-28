@@ -6,7 +6,6 @@ import {
   LogOut, 
   Menu, 
   Settings,
-  Search,
   Smile,
   User,
   X

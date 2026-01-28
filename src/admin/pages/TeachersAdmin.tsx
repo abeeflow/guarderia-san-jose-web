@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Plus, Edit2, Trash2, User as UserIcon, Filter, Search, type LucideIcon } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import AlertModal from '../components/AlertModal';
@@ -55,11 +55,11 @@ export default function TeachersAdmin() {
   const [courseFilter, setCourseFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
-  const showAlert = (type: 'success' | 'error' | 'warning', title: string, message: string, onClose?: () => void) => {
+  const showAlert = useCallback((type: 'success' | 'error' | 'warning', title: string, message: string, onClose?: () => void) => {
     setAlertConfig({ isOpen: true, type, title, message, onClose });
-  };
+  }, []);
 
-  const fetchTeachers = async () => {
+  const fetchTeachers = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -87,11 +87,11 @@ export default function TeachersAdmin() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [showAlert]);
 
   useEffect(() => {
     fetchTeachers();
-  }, []);
+  }, [fetchTeachers]);
 
   const courses = useMemo(() => {
     const set = new Set<string>();

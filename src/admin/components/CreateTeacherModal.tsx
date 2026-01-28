@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, User, Calendar, Shield, Image as ImageIcon, Camera } from 'lucide-react';
+import { X, User, Calendar, Shield, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import AlertModal from './AlertModal';
 import { OptimizedImage } from '../../components/OptimizedImage';
