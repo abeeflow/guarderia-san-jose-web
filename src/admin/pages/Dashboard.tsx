@@ -108,7 +108,7 @@ export default function Dashboard() {
 
       {/* Users Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-xl font-bold text-[#111118]">Gestión de Usuarios</h2>
           <div className="flex items-center gap-3">
              <button className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors">
@@ -127,10 +127,10 @@ export default function Dashboard() {
              <table className="w-full text-left border-collapse">
                <thead className="bg-gray-50/30 border-b border-gray-100">
                  <tr>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[40%]">Usuario</th>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[25%]">Rol</th>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[15%]">Estado</th>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right w-[20%]">Acciones</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[250px]">Usuario</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[150px]">Rol</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[120px]">Estado</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right min-w-[100px]">Acciones</th>
                  </tr>
                </thead>
                <tbody className="divide-y divide-gray-50">

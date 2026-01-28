@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import EventsSection from '../components/EventsSection';
+import EducationalProjectSection from '../components/EducationalProjectSection';
 
 const programs = [
   {
@@ -43,50 +44,6 @@ const programs = [
     iconBg: "bg-yellow-50"
   }
 ];
-
-const projectItems = [
-  {
-    id: 1,
-    text: "ENFOQUE EN EL DESARROLLO SOCIOEMOCIONAL",
-    icon: "psychology",
-    color: "text-orange-500",
-    borderColor: "border-orange-200",
-    hoverBorder: "hover:border-orange-400",
-    bg: "bg-orange-50",
-    shadow: "shadow-orange-100"
-  },
-  {
-    id: 2,
-    text: "APRENDIZAJE LÚDICO Y CREATIVO",
-    icon: "star",
-    color: "text-cyan-500",
-    borderColor: "border-cyan-200",
-    hoverBorder: "hover:border-cyan-400",
-    bg: "bg-cyan-50",
-    shadow: "shadow-cyan-100"
-  },
-  {
-    id: 3,
-    text: "PROGRAMA DE PSICOMOTRICIDAD TEMPRANA",
-    icon: "directions_run",
-    color: "text-green-500",
-    borderColor: "border-green-200",
-    hoverBorder: "hover:border-green-400",
-    bg: "bg-green-50",
-    shadow: "shadow-green-100"
-  },
-  {
-    id: 4,
-    text: "CLASES DE MÚSICA Y ARTE",
-    icon: "music_note",
-    color: "text-purple-500",
-    borderColor: "border-purple-200",
-    hoverBorder: "hover:border-purple-400",
-    bg: "bg-purple-50",
-    shadow: "shadow-purple-100"
-  }
-];
-
 
 
 // Map Modal Component
@@ -157,20 +114,23 @@ export default function Home() {
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <div className="relative w-full h-[600px] lg:h-[750px] flex overflow-hidden">
-        {/* Background Layer Split */}
-        <div className="w-[65%] h-full relative">
-           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_1.png")' }}></div>
-           <div className="absolute inset-0 bg-black/10"></div>
-        </div>
-        <div className="w-[35%] h-full relative hidden md:block">
-           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_2.png")' }}></div>
-           <div className="absolute inset-0 bg-primary/10 backdrop-grayscale-[50%]"></div>
+      <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" id="home">
+        
+        {/* Background Layer Split - Absolute to ensure full coverage */}
+        <div className="absolute inset-0 flex z-0">
+          <div className="w-full md:w-[65%] h-full relative">
+             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_1.png")' }}></div>
+             <div className="absolute inset-0 bg-black/10"></div>
+          </div>
+          <div className="w-[35%] h-full relative hidden md:block">
+             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_2.png")' }}></div>
+             <div className="absolute inset-0 bg-primary/10 backdrop-grayscale-[50%]"></div>
+          </div>
         </div>
 
         {/* Floating Main Card */}
-        <div className="absolute inset-0 flex items-center justify-center p-0 lg:p-10 z-20">
-          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl flex overflow-hidden max-w-[1200px] w-full border border-white/50 relative">
+        <div className="relative z-20 w-full max-w-[1200px] p-4 lg:p-10">
+          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl flex overflow-hidden w-full border border-white/50 relative min-h-[500px] lg:min-h-[600px]">
              
              {/* Text Content (Left Side of Card) */}
              <div className="flex-1 p-8 lg:p-16 flex flex-col justify-center gap-6 lg:gap-8">
@@ -218,7 +178,7 @@ export default function Home() {
       </div>
 
       {/* Services Section */}
-      <section className="py-16 lg:py-24 bg-white scroll-mt-28" id="programs">
+      <section className="min-h-screen flex flex-col justify-center py-16 lg:py-24 bg-white scroll-mt-[81px]" id="programs">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           {/* Header de la sección */}
           <div className="flex flex-col items-center text-center gap-6 mb-16">
@@ -277,77 +237,7 @@ export default function Home() {
       </section>
 
       {/* Educational Project Section */}
-      <section className="py-10 lg:py-12 bg-[#f5f5f8] scroll-mt-28" id="educational-project">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
-          
-          {/* Main Title */}
-          <div className="text-center mb-6">
-            <h2 className="text-[#111118] text-3xl lg:text-4xl font-extrabold tracking-tight">
-              Conócenos
-            </h2>
-          </div>
-
-          {/* Main Top Card */}
-          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 lg:p-8 mb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center">
-              
-              {/* Left Column: Philosophy */}
-              <div className="flex flex-col gap-3 text-center lg:text-left">
-                <h3 className="text-xl font-bold text-[#111118]">Nuestra Filosofía</h3>
-                <p className="text-[#5f5f8c] text-sm lg:text-base font-medium leading-relaxed">
-                  Somos una guardería bilingüe dedicada a potenciar lo mejor de los más pequeños.
-                  Ofrecemos un ambiente seguro y estimulante, centrado en el desarrollo integral y felicidad.
-                </p>
-              </div>
-
-              {/* Middle Column: Team */}
-              <div className="flex flex-col items-center gap-2 text-center border-t lg:border-t-0 lg:border-l lg:border-r border-gray-100 py-6 lg:py-0">
-                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-1">
-                  <span className="material-symbols-outlined text-2xl">diversity_3</span>
-                </div>
-                <h3 className="text-lg font-bold text-[#111118]">Nuestro Equipo</h3>
-                <p className="text-[#5f5f8c] text-sm font-medium">Equipo Docente - Directora</p>
-                
-                <button className="mt-2 bg-[#00a0e3] hover:bg-[#008bc7] text-white font-bold py-2 px-5 rounded-lg text-sm transition-colors shadow-md shadow-blue-200">
-                  Tour Virtual
-                </button>
-              </div>
-
-              {/* Right Column: Facilities */}
-              <div className="flex flex-col items-center gap-2 text-center">
-                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-400 mb-1">
-                  <span className="material-symbols-outlined text-2xl">domain</span>
-                </div>
-                <h3 className="text-lg font-bold text-[#111118]">Nuestras Instalaciones</h3>
-                <div className="text-[#5f5f8c] text-sm font-medium">
-                  <p>Aulas Modernas y Seguras</p>
-                  <p>Áreas de Juego al Aire Libre</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Grid Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {projectItems.map((item) => (
-              <div 
-                key={item.id}
-                className={`group ${item.bg} rounded-2xl p-6 border ${item.borderColor} ${item.hoverBorder} transition-all duration-300 hover:shadow-lg hover:-translate-y-1`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-white ${item.shadow} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
-                    <span className={`material-symbols-outlined ${item.color} text-2xl`}>{item.icon}</span>
-                  </div>
-                  <h3 className={`text-[#111118] font-bold text-sm lg:text-base leading-tight uppercase tracking-wide`}>
-                    {item.text}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <EducationalProjectSection />
 
       <EventsSection />
 

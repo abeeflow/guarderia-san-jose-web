@@ -17,6 +17,7 @@ import KidsAdmin from './admin/pages/KidsAdmin';
 import GroupsAdmin from './admin/pages/GroupsAdmin';
 import SettingsAdmin from './admin/pages/SettingsAdmin';
 import ProtectedRoute from './admin/components/ProtectedRoute';
+import TeachersAdmin from './admin/pages/TeachersAdmin';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="events" element={<EventsAdmin />} />
               <Route path="users" element={<UsersAdmin />} />
+              <Route path="teachers" element={<TeachersAdmin />} />
               <Route path="kids" element={<KidsAdmin />} />
               <Route path="groups" element={<GroupsAdmin />} />
               <Route path="settings" element={<SettingsAdmin />} />
