@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, User, Shield, Eye, EyeOff } from 'lucide-react';
+import { X, User, Shield, Calendar, Eye, EyeOff } from 'lucide-react';
 
 export interface UserFormData {
   name: string;
@@ -7,23 +7,27 @@ export interface UserFormData {
   role: string;
   password?: string;
   isActive: boolean;
+  fecha_cum: string;
+  usuario?: string;
 }
 
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreate: (userData: UserFormData) => void;
-  userToEdit?: Partial<UserFormData> & { id?: number; estado?: boolean };
+  userToEdit?: Partial<UserFormData> & { id?: number; estado?: boolean; fecha_cum?: string; usuario?: string };
 }
 
 export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit }: CreateUserModalProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserFormData>({
     name: '',
     email: '',
     role: '',
     password: '',
-    isActive: true
+    isActive: true,
+    fecha_cum: '',
+    usuario: ''
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +40,9 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
           email: userToEdit.email || '',
           role: userToEdit.role || '',
           password: userToEdit.password || '',
-          isActive: userToEdit.estado ?? true
+          isActive: userToEdit.estado ?? true,
+          fecha_cum: userToEdit.fecha_cum ? userToEdit.fecha_cum.slice(0, 10) : '',
+          usuario: userToEdit.usuario || ''
         });
       } else {
         setFormData({
@@ -44,7 +50,9 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
           email: '',
           role: '',
           password: '',
-          isActive: true
+          isActive: true,
+          fecha_cum: '',
+          usuario: ''
         });
       }
       setErrors({});
@@ -57,6 +65,7 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
     const newErrors: { [key: string]: string } = {};
     
     if (!formData.name.trim()) newErrors.name = 'El nombre es obligatorio';
+    if (!formData.fecha_cum) newErrors.fecha_cum = 'La fecha de cumpleaños es obligatoria';
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) {
@@ -83,7 +92,28 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
 
     setIsLoading(true);
     try {
-      await onCreate(formData);
+      // Generate username logic
+      const parts = formData.name.trim().split(/\s+/);
+      const firstName = parts[0] || '';
+      const lastName = parts.length > 1 ? parts[1] : '';
+      
+      const capitalize = (s: string) => s && s[0].toUpperCase() + s.slice(1).toLowerCase();
+      
+      const uName = capitalize(firstName.substring(0, 3));
+      const uLast = capitalize(lastName.substring(0, 3)); // If empty, will be ""
+      
+      // Date: YYYY-MM-DD -> DDMM
+      const dateParts = formData.fecha_cum.split('-'); // [YYYY, MM, DD]
+      const uDate = dateParts.length === 3 ? `${dateParts[2]}${dateParts[1]}` : '';
+      
+      const generatedUser = `${uName}${uLast}${uDate}`;
+      
+      const payload = {
+        ...formData,
+        usuario: generatedUser
+      };
+
+      await onCreate(payload);
       onClose();
       // Reset form
       setFormData({
@@ -91,7 +121,9 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
         email: '',
         role: '',
         password: '',
-        isActive: true
+        isActive: true,
+        fecha_cum: '',
+        usuario: ''
       });
       setErrors({});
     } catch (error) {
@@ -110,9 +142,9 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl transform transition-all overflow-hidden">
+      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl transform transition-all flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-start justify-between p-8 pb-0">
+        <div className="flex items-start justify-between p-8 pb-0 shrink-0">
           <div>
             <h2 className="text-2xl font-bold text-[#111118]">{userToEdit ? 'Editar Usuario' : 'Crear Nuevo Usuario'}</h2>
             <p className="text-gray-500 mt-1">{userToEdit ? 'Modifica los datos del usuario seleccionado.' : 'Completa los datos para registrar un nuevo integrante del equipo.'}</p>
@@ -125,7 +157,8 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+        <div className="overflow-y-auto">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8">
           {/* Personal Information Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-[#00A76F] font-bold text-xs tracking-wider uppercase">
@@ -163,6 +196,27 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
                   
                 />
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+              </div>
+            </div>
+            
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+               <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">Fecha de Cumpleaños</label>
+                <div className="relative">
+                  <input 
+                    type="date"
+                    className={`w-full px-4 py-3 rounded-xl border ${errors.fecha_cum ? 'border-red-500' : 'border-gray-200'} focus:border-[#00A76F] focus:ring-2 focus:ring-[#00A76F]/20 outline-none transition-all placeholder-gray-400 text-gray-800`}
+                    value={formData.fecha_cum}
+                    onChange={(e) => {
+                      setFormData({...formData, fecha_cum: e.target.value});
+                      if (errors.fecha_cum) setErrors({...errors, fecha_cum: ''});
+                    }}
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <Calendar size={18} />
+                  </div>
+                </div>
+                {errors.fecha_cum && <p className="text-red-500 text-xs mt-1">{errors.fecha_cum}</p>}
               </div>
             </div>
           </div>
@@ -266,6 +320,7 @@ export default function CreateUserModal({ isOpen, onClose, onCreate, userToEdit 
             </button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Lock, User, ArrowRight } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -51,10 +52,12 @@ export default function Login() {
       <div className="hidden lg:flex lg:w-1/2 relative bg-[#0a1e5e] text-white overflow-hidden flex-col justify-end p-12 lg:p-16">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
-          <img 
+          <OptimizedImage 
             src="https://static.vecteezy.com/system/resources/previews/008/517/116/non_2x/playschool-teacher-teaching-to-kids-vector.jpg" 
             alt="Teacher reading to kids" 
-            className="w-full h-full object-cover opacity-40 mix-blend-overlay"
+            className="w-full h-full"
+            imageClassName="object-cover opacity-40 mix-blend-overlay"
+            priority={true}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e5e] via-[#0a1e5e]/80 to-transparent"></div>
         </div>
@@ -82,7 +85,7 @@ export default function Login() {
           {/* Header */}
           <div className="text-center mb-10">
             <div className="w-20 h-20 mx-auto mb-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-2 flex items-center justify-center">
-               <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+               <OptimizedImage src="/logo.png" alt="Logo" className="w-full h-full" imageClassName="object-contain" priority={true} />
             </div>
             <h2 className="text-2xl font-bold text-[#111118] mb-2">Panel de Administración</h2>
             <p className="text-gray-500">Ingresa al sistema de gestión de personal</p>

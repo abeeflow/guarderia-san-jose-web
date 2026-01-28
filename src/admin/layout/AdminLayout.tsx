@@ -8,6 +8,7 @@ import {
   Settings,
   Search,
   Smile,
+  User,
   X
 } from 'lucide-react';
 import { useState } from 'react';
@@ -15,7 +16,7 @@ import { useState } from 'react';
 export default function AdminLayout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
 
   const handleLogout = () => {
     logout();
@@ -26,6 +27,7 @@ export default function AdminLayout() {
     // { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/events', icon: Calendar, label: 'Eventos' },
     { path: '/admin/users', icon: Users, label: 'Usuarios' },
+    { path: '/admin/teachers', icon: User, label: 'Maestros' },
     // { path: '/admin/kids', icon: Baby, label: 'Niños' },
     // { path: '/admin/groups', icon: UsersRound, label: 'Grupos' },
   ];
@@ -36,11 +38,19 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen bg-white">
+      {/* Mobile Sidebar Backdrop */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside 
-        className={`bg-[#0F172A] text-white transition-all duration-300 ${
-          isSidebarOpen ? 'w-64' : 'w-20'
-        } flex flex-col fixed h-full z-30 md:relative`}
+        className={`bg-[#0F172A] text-white transition-all duration-300 flex flex-col fixed h-full z-30 md:relative
+          ${isSidebarOpen ? 'translate-x-0 w-64' : '-translate-x-full w-64 md:translate-x-0 md:w-20'}
+        `}
       >
         {/* Logo */}
         <div className="p-6 flex items-center justify-between">
@@ -146,15 +156,8 @@ export default function AdminLayout() {
         
         {/* Top Bar */}
         <header className="h-16 border-b border-gray-100 flex items-center justify-between px-8 bg-white shrink-0 z-20">
-          {/* Search */}
-          <div className="flex items-center gap-3 text-gray-400 w-full max-w-md">
-            <Search size={20} />
-            <input 
-              type="text" 
-              placeholder="Buscar..." 
-              className="w-full bg-transparent border-none outline-none text-gray-700 placeholder-gray-400"
-            />
-          </div>
+          {/* Search Removed */}
+          <div className="flex-1"></div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-6">

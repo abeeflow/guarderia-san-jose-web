@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import TeachersModal from './TeachersModal';
+
 const projectItems = [
   {
     id: 1,
@@ -42,6 +45,8 @@ const projectItems = [
 ];
 
 export default function EducationalProjectSection() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <section className="min-h-screen flex flex-col justify-center py-10 lg:py-12 bg-[#f5f5f8] scroll-mt-[81px]" id="educational-project">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
@@ -74,7 +79,13 @@ export default function EducationalProjectSection() {
               <h3 className="text-lg font-bold text-[#111118]">Nuestro Equipo</h3>
               <p className="text-[#5f5f8c] text-sm font-medium">Equipo Docente - Directora</p>
               
-              <button className="mt-2 bg-[#00a0e3] hover:bg-[#008bc7] text-white font-bold py-2 px-5 rounded-lg text-sm transition-colors shadow-md shadow-blue-200">
+              <button 
+                onClick={() => {
+                  console.log('Opening Teachers Modal');
+                  setIsModalOpen(true);
+                }}
+                className="mt-2 bg-[#00a0e3] hover:bg-[#008bc7] text-white font-bold py-2 px-5 rounded-lg text-sm transition-colors shadow-md shadow-blue-200"
+              >
                 Tour Virtual
               </button>
             </div>
@@ -128,6 +139,11 @@ export default function EducationalProjectSection() {
         </div>
 
       </div>
+      
+      <TeachersModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </section>
   );
 }

@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Download
 } from 'lucide-react';
+import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function Dashboard() {
   // Mock data
@@ -107,7 +108,7 @@ export default function Dashboard() {
 
       {/* Users Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-xl font-bold text-[#111118]">Gestión de Usuarios</h2>
           <div className="flex items-center gap-3">
              <button className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-50 transition-colors">
@@ -126,24 +127,25 @@ export default function Dashboard() {
              <table className="w-full text-left border-collapse">
                <thead className="bg-gray-50/30 border-b border-gray-100">
                  <tr>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[40%]">Usuario</th>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[25%]">Rol</th>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[15%]">Estado</th>
-                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right w-[20%]">Acciones</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[250px]">Usuario</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[150px]">Rol</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[120px]">Estado</th>
+                   <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right min-w-[100px]">Acciones</th>
                  </tr>
                </thead>
                <tbody className="divide-y divide-gray-50">
                  {users.map((user) => (
                    <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
                      <td className="py-5 px-6">
-                       <div className="flex items-center gap-4">
-                         <img 
-                           src={user.image} 
-                           alt={user.name} 
-                           className="w-10 h-10 rounded-lg object-cover"
-                         />
-                         <div>
-                           <p className="font-bold text-gray-900 text-sm">{user.name}</p>
+                        <div className="flex items-center gap-4">
+                          <OptimizedImage 
+                            src={user.image} 
+                            alt={user.name} 
+                            className="w-10 h-10 rounded-lg overflow-hidden" 
+                            imageClassName="object-cover"
+                          />
+                          <div>
+                            <p className="font-bold text-gray-900 text-sm">{user.name}</p>
                            <p className="text-xs text-gray-500">{user.email}</p>
                          </div>
                        </div>

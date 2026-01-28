@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Shield, User as UserIcon, type LucideIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, Shield, User as UserIcon, Search, type LucideIcon } from 'lucide-react';
 import CreateUserModal, { type UserFormData } from '../components/CreateUserModal';
 import AlertModal from '../components/AlertModal';
 import ConfirmModal from '../components/ConfirmModal';
@@ -11,6 +11,8 @@ interface DBUser {
   email: string;
   role: string;
   estado: boolean;
+  usuario: string;
+  fecha_cum: string;
 }
 
 interface User {
@@ -22,11 +24,14 @@ interface User {
   roleIcon: LucideIcon;
   status: string;
   statusColor: string;
+  usuario: string;
+  fecha_cum: string;
 }
 
 export default function UsersAdmin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
+  const [searchText, setSearchText] = useState('');
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
   // const [isLoading, setIsLoading] = useState(true);
   const [alertConfig, setAlertConfig] = useState<{
@@ -84,6 +89,8 @@ export default function UsersAdmin() {
           roleIcon: user.role === 'Administrador' ? Shield : (user.role === 'Editor Académico' ? Edit2 : UserIcon),
           status: user.estado ? 'Activo' : 'Inactivo',
           statusColor: user.estado ? 'bg-[#EBFDF5] text-[#00A76F]' : 'bg-gray-100 text-gray-500',
+          usuario: user.usuario || '',
+          fecha_cum: user.fecha_cum || ''
         }));
         setUsers(mappedUsers);
       }
@@ -109,7 +116,9 @@ export default function UsersAdmin() {
             email: userData.email,
             password: userData.password,
             role: userData.role,
-            estado: userData.isActive
+            estado: userData.isActive,
+            usuario: userData.usuario,
+            fecha_cum: userData.fecha_cum
           })
           .eq('id', userToEdit.id);
 
@@ -126,6 +135,8 @@ export default function UsersAdmin() {
               password: userData.password, // Note: In a real app, hash this password!
               role: userData.role,
               estado: userData.isActive,
+              usuario: userData.usuario,
+              fecha_cum: userData.fecha_cum,
               created_at: new Date().toISOString()
             }
           ]);
@@ -169,6 +180,11 @@ export default function UsersAdmin() {
     }
   };
 
+  const filteredUsers = users.filter(user => 
+    user.name.toLowerCase().includes(searchText.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -190,29 +206,68 @@ export default function UsersAdmin() {
 
       {/* Users Table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+         {/* Toolbar */}
+         <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-4 justify-between items-center bg-white">
+           <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-200 flex-1 w-full sm:max-w-md">
+             <Search size={16} className="text-gray-400" />
+             <input
+               value={searchText}
+               onChange={e => setSearchText(e.target.value)}
+               placeholder="Buscar por nombre o correo"
+               className="w-full bg-transparent outline-none text-sm"
+             />
+           </div>
+           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+             Mostrando {filteredUsers.length} resultados
+           </p>
+         </div>
+
          <div className="overflow-x-auto">
            <table className="w-full text-left border-collapse">
              <thead className="bg-gray-50/30 border-b border-gray-100">
                <tr>
-                 <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[40%]">Usuario</th>
-                 <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[25%]">Rol</th>
-                 <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider w-[15%]">Estado</th>
-                 <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right w-[20%]">Acciones</th>
-               </tr>
-             </thead>
-             <tbody className="divide-y divide-gray-50">
-               {users.map((user) => (
-                 <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
-                   <td className="py-5 px-6">
-                     <div className="flex items-center gap-4">
-                       <div>
-                         <p className="font-bold text-gray-900 text-sm">{user.name}</p>
-                         <p className="text-xs text-gray-500">{user.email}</p>
-                       </div>
-                     </div>
-                   </td>
-                   <td className="py-5 px-6">
-                     <div className="flex items-center gap-2 text-gray-600 text-sm font-medium">
+            <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[250px]">Nombre</th>
+            <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[150px]">Usuario</th>
+            <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[150px]">Fecha Cumpleaños</th>
+            <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[150px]">Rol</th>
+            <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[100px]">Estado</th>
+            <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right min-w-[100px]">Acciones</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-50">
+          {filteredUsers.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="p-12 text-center text-gray-500">
+                <p>No se encontraron usuarios.</p>
+              </td>
+            </tr>
+          ) : (
+            filteredUsers.map((user) => (
+            <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
+              <td className="py-5 px-6">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <p className="font-bold text-gray-900 text-sm">{user.name}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                  </div>
+                </div>
+              </td>
+              <td className="py-5 px-6">
+                <p className="text-sm text-gray-600 font-medium">{user.usuario || '-'}</p>
+              </td>
+              <td className="py-5 px-6">
+                <p className="text-sm text-gray-600">
+                  {user.fecha_cum ? (() => {
+                    const parts = user.fecha_cum.split('-');
+                    const y = parts[0];
+                    const m = parts[1]?.padStart(2, '0');
+                    const d = parts[2]?.padStart(2, '0');
+                    return `${d}/${m}/${y}`;
+                  })() : '-'}
+                </p>
+              </td>
+              <td className="py-5 px-6">
+                <div className="flex items-center gap-2 text-gray-600 text-sm font-medium">
                       {(() => {
                         const RoleIcon = user.roleIcon;
                         return <RoleIcon size={16} className="text-gray-500" />;
@@ -246,7 +301,8 @@ export default function UsersAdmin() {
                     </div>
                    </td>
                  </tr>
-               ))}
+                 ))
+              )}
              </tbody>
            </table>
          </div>

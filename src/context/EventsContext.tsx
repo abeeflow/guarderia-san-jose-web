@@ -1,14 +1,6 @@
-import { createContext, useState, type ReactNode, useEffect } from 'react';
+import { useState, type ReactNode, useEffect } from 'react';
 import { type Event, initialEvents } from '../data/events';
-
-interface EventsContextType {
-  events: Event[];
-  addEvent: (event: Omit<Event, 'id'>) => void;
-  updateEvent: (id: number, event: Partial<Event>) => void;
-  deleteEvent: (id: number) => void;
-}
-
-export const EventsContext = createContext<EventsContextType | undefined>(undefined);
+import { EventsContext } from './EventsContextVals';
 
 export function EventsProvider({ children }: { children: ReactNode }) {
   // Initialize from localStorage or fallback to initialEvents

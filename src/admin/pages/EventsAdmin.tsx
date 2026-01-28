@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Image as ImageIcon, Edit2, Calendar } from 'lucide-react';
+import { Plus, Trash2, Image as ImageIcon, Edit2, Calendar, Search } from 'lucide-react';
 import CreateEventModal from '../components/CreateEventModal';
 import AlertModal from '../components/AlertModal';
 import ConfirmModal from '../components/ConfirmModal';
@@ -44,6 +44,8 @@ export default function EventsAdmin() {
     message: '',
     onConfirm: () => {}
   });
+
+  const [searchText, setSearchText] = useState('');
 
   // Stats State
   const [stats, setStats] = useState({
@@ -160,6 +162,18 @@ export default function EventsAdmin() {
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '';
+    // Use string splitting to avoid timezone issues with date-only strings
+    const parts = dateStr.split('T')[0].split('-');
+    if (parts.length === 3) {
+      const [y, m, d] = parts;
+      const date = new Date(Number(y), Number(m) - 1, Number(d));
+      return new Intl.DateTimeFormat('es-ES', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      }).format(date);
+    }
+    // Fallback for full ISO strings or other formats
     const date = new Date(dateStr);
     return new Intl.DateTimeFormat('es-ES', {
       day: 'numeric',
@@ -167,6 +181,11 @@ export default function EventsAdmin() {
       year: 'numeric'
     }).format(date);
   };
+
+  const filteredEvents = events.filter(event => 
+    event.titulo.toLowerCase().includes(searchText.toLowerCase()) ||
+    event.descripcion.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <div className="space-y-8">
@@ -203,13 +222,18 @@ export default function EventsAdmin() {
       {/* Main Content */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         {/* Toolbar */}
-        <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row gap-4 justify-between items-center bg-white">
-          <div className="flex gap-2 bg-gray-50 p-1 rounded-lg">
-             <button className="px-4 py-1.5 bg-white rounded-md shadow-sm text-xs font-bold text-[#111118]">Todas las categorías</button>
-             <button className="px-4 py-1.5 text-gray-500 hover:bg-gray-200/50 rounded-md text-xs font-medium transition-colors">Último año</button>
+        <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-4 justify-between items-center bg-white">
+          <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-200 flex-1 w-full sm:max-w-md">
+            <Search size={16} className="text-gray-400" />
+            <input
+              value={searchText}
+              onChange={e => setSearchText(e.target.value)}
+              placeholder="Buscar por título o descripción"
+              className="w-full bg-transparent outline-none text-sm"
+            />
           </div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-            Mostrando {events.length} resultados
+            Mostrando {filteredEvents.length} resultados
           </p>
         </div>
 
@@ -217,10 +241,10 @@ export default function EventsAdmin() {
           <table className="w-full text-left border-collapse">
             <thead className="bg-gray-50/50 border-b border-gray-100">
               <tr>
-                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Evento</th>
-                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Fecha</th>
-                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Galería</th>
-                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Acciones</th>
+                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[250px]">Evento</th>
+                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[150px]">Fecha</th>
+                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider min-w-[150px]">Galería</th>
+                <th className="py-5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right min-w-[100px]">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -233,17 +257,17 @@ export default function EventsAdmin() {
                     </div>
                   </td>
                 </tr>
-              ) : events.length === 0 ? (
+              ) : filteredEvents.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="p-12 text-center text-gray-500">
                     <div className="flex flex-col items-center gap-3 opacity-50">
                       <Calendar size={48} />
-                      <p>No hay eventos registrados.</p>
+                      <p>No hay eventos que coincidan con la búsqueda.</p>
                     </div>
                   </td>
                 </tr>
               ) : (
-                events.map((event) => (
+                filteredEvents.map((event) => (
                   <tr key={event.id} className="hover:bg-gray-50/50 transition-colors group">
                     <td className="py-5 px-6">
                       <div className="flex items-center gap-3">
