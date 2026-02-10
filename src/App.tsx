@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import WhatsAppButton from './components/WhatsAppButton';
 import Home from './pages/Home';
 import Enrollment from './pages/Enrollment';
 
@@ -61,6 +62,7 @@ function App() {
             </Route>
           </Routes>
         </Router>
+        <WhatsAppButton />
       </EventsProvider>
     </AuthProvider>
   );
