@@ -1,26 +1,25 @@
 # Build stage
 FROM node:20-alpine AS builder
 
-WORKDIR /app
-
-# Build arguments for Vite
+# Build arguments from Dokploy
 ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_ANON_KEY
 ARG VITE_WHATSAPP_NUMBER
 
+WORKDIR /app
+
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies - force fresh install
-RUN rm -rf node_modules && npm ci
+# Install dependencies
+RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Create .env file from build arguments
-RUN echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL" > .env && \
-    echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> .env && \
-    echo "VITE_WHATSAPP_NUMBER=$VITE_WHATSAPP_NUMBER" >> .env
+# Create .env from build args
+RUN printf "VITE_SUPABASE_URL=%s\nVITE_SUPABASE_ANON_KEY=%s\nVITE_WHATSAPP_NUMBER=%s\n" \
+    "$VITE_SUPABASE_URL" "$VITE_SUPABASE_ANON_KEY" "$VITE_WHATSAPP_NUMBER" > .env
 
 # Build the application
 RUN npm run build
