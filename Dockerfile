@@ -8,11 +8,6 @@ ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_ANON_KEY
 ARG VITE_WHATSAPP_NUMBER
 
-# Set as environment variables for the build
-ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
-ENV VITE_WHATSAPP_NUMBER=$VITE_WHATSAPP_NUMBER
-
 # Copy package files
 COPY package*.json ./
 
@@ -21,6 +16,11 @@ RUN rm -rf node_modules && npm ci
 
 # Copy source code
 COPY . .
+
+# Create .env file from build arguments
+RUN echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL" > .env && \
+    echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> .env && \
+    echo "VITE_WHATSAPP_NUMBER=$VITE_WHATSAPP_NUMBER" >> .env
 
 # Build the application
 RUN npm run build
