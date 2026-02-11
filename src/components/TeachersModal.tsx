@@ -98,11 +98,9 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
           
           {/* Header */}
           <div className="text-center mb-6">
-            <span className="inline-block px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-extrabold uppercase tracking-widest mb-4">
-              Conoce a nuestra familia
-            </span>
+            
             <h2 className="text-3xl md:text-4xl font-black text-[#1E1B4B]">
-              Nuestro Equipo Docente
+              Nuestras Instalaciones
             </h2>
             <div className="w-16 h-1 bg-blue-200 mx-auto mt-3 rounded-full"></div>
           </div>
@@ -139,13 +137,7 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
                     </div>
                   </div>
 
-                  {/* Info */}
-                  <h3 className="text-base md:text-lg font-bold text-[#1E1B4B] mb-1 group-hover:text-blue-600 transition-colors">
-                    {teacher.nombre} {teacher.apellidos}
-                  </h3>
-                  <p className="text-xs md:text-sm font-medium text-gray-500">
-                    {teacher.curso}
-                  </p>
+                  
                 </div>
               ))}
             </div>

@@ -271,7 +271,8 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="font-bold">Telefono</p>
-                    <p className="text-sm text-gray-500">+506 2234-5678</p>
+                    <p className="text-sm text-gray-500">+51 942628995</p>
+                    <p className="text-sm text-gray-500">044 281060</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -280,7 +281,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="font-bold">Correo Electronico</p>
-                    <p className="text-sm text-gray-500">admisiones@sanjosekinder.edu</p>
+                    <p className="text-sm text-gray-500">guarderiajardinbilinguesanjose@gmail.com</p>
                   </div>
                 </div>
               </div>

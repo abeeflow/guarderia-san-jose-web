@@ -73,12 +73,15 @@ export default function EducationalProjectSection() {
 
             {/* Middle Column: Team */}
             <div className="flex flex-col items-center gap-2 text-center border-t lg:border-t-0 lg:border-l lg:border-r border-gray-100 py-6 lg:py-0">
-              <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-1">
-                <span className="material-symbols-outlined text-2xl">diversity_3</span>
+              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-400 mb-1">
+                <span className="material-symbols-outlined text-2xl">domain</span>
               </div>
-              <h3 className="text-lg font-bold text-[#111118]">Nuestro Equipo</h3>
-              <p className="text-[#5f5f8c] text-sm font-medium">Equipo Docente - Directora</p>
-              
+              <h3 className="text-lg font-bold text-[#111118]">Nuestras Instalaciones</h3>
+              <div className="text-[#5f5f8c] text-sm font-medium">
+                <p>Aulas Equipadas y Seguras</p>
+                <p>Áreas de Juego al Aire Libre</p>
+              </div>
+
               <button 
                 onClick={() => {
                   console.log('Opening Teachers Modal');
@@ -86,21 +89,11 @@ export default function EducationalProjectSection() {
                 }}
                 className="mt-2 bg-[#00a0e3] hover:bg-[#008bc7] text-white font-bold py-2 px-5 rounded-lg text-sm transition-colors shadow-md shadow-blue-200"
               >
-                Tour Virtual
+                Ver
               </button>
             </div>
 
-            {/* Right Column: Facilities */}
-            <div className="flex flex-col items-center gap-2 text-center">
-              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-400 mb-1">
-                <span className="material-symbols-outlined text-2xl">domain</span>
-              </div>
-              <h3 className="text-lg font-bold text-[#111118]">Nuestras Instalaciones</h3>
-              <div className="text-[#5f5f8c] text-sm font-medium">
-                <p>Aulas Modernas y Seguras</p>
-                <p>Áreas de Juego al Aire Libre</p>
-              </div>
-            </div>
+            
 
           </div>
         </div>
