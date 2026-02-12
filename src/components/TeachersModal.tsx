@@ -22,7 +22,7 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 6;
+  const itemsPerPage = 1;
 
   useEffect(() => {
     if (isOpen) {
@@ -63,16 +63,6 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
     (currentPage + 1) * itemsPerPage
   );
 
-  // blob shapes for variety
-  const blobShapes = [
-    "60% 40% 30% 70% / 60% 30% 70% 40%",
-    "30% 70% 70% 30% / 30% 30% 70% 70%",
-    "50% 50% 30% 70% / 50% 50% 70% 60%",
-    "70% 30% 30% 70% / 60% 40% 60% 40%",
-    "40% 60% 60% 40% / 60% 30% 70% 40%",
-    "60% 40% 40% 60% / 40% 60% 60% 40%"
-  ];
-
   if (!isOpen) return null;
 
   return createPortal(
@@ -105,87 +95,77 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
             <div className="w-16 h-1 bg-blue-200 mx-auto mt-3 rounded-full"></div>
           </div>
 
-          {/* Grid */}
+          {/* Main Content */}
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
             </div>
           ) : teachers.length === 0 ? (
             <div className="text-center text-gray-500 py-12">
-              <p>No hay maestros disponibles en este momento.</p>
+              <p>No hay instalaciones disponibles en este momento.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 max-w-4xl mx-auto">
-              {currentTeachers.map((teacher, index) => (
-                <div key={teacher.id} className="flex flex-col items-center text-center group">
-                  {/* Image Container with Blob Shape */}
-                  <div className="relative w-36 h-36 md:w-40 md:h-40 mb-4 transition-transform duration-300 group-hover:scale-105">
-                    <div 
-                      className="absolute inset-0 bg-blue-100/50 -rotate-6 scale-105 transition-transform group-hover:rotate-12"
-                      style={{ borderRadius: blobShapes[(index + 1) % blobShapes.length] }}
-                    ></div>
-                    <div 
-                      className="relative w-full h-full overflow-hidden shadow-lg border-4 border-white bg-white"
-                      style={{ borderRadius: blobShapes[index % blobShapes.length] }}
-                    >
-                      <OptimizedImage
-                        src={teacher.img_maestro}
-                        alt={`${teacher.nombre} ${teacher.apellidos}`}
-                        className="w-full h-full"
-                        imageClassName="object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  
-                </div>
-              ))}
+            <div className="flex flex-col items-center justify-center w-full h-full">
+              {/* Image Container */}
+              <div className="relative w-full md:w-[70%] h-[40vh] md:h-[50vh] rounded-xl overflow-hidden shadow-lg bg-gray-50 border border-gray-100 mb-6">
+                <OptimizedImage
+                  src={currentTeachers[0].img_maestro}
+                  alt={`${currentTeachers[0].nombre || ''} ${currentTeachers[0].apellidos || ''}`}
+                  className="w-full h-full"
+                  imageClassName="object-contain w-full h-full"
+                />
+              </div>
+              
+              {/* Optional Info */}
+              
             </div>
           )}
 
         </div>
 
-        {/* Footer / Navigation */}
-        <div className="p-6 border-t border-gray-50 bg-gray-50/50 flex items-center justify-center gap-4">
-          <button
-            onClick={prevPage}
-            disabled={teachers.length <= itemsPerPage}
-            className={`p-3 rounded-full transition-all ${
-              teachers.length <= itemsPerPage
-                ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                : 'bg-white text-gray-700 shadow-md hover:bg-blue-50 hover:text-blue-600 hover:scale-110 active:scale-95'
-            }`}
-          >
-            <ChevronLeft size={24} />
-          </button>
-          
-          <div className="flex gap-2">
-             {Array.from({ length: totalPages }).map((_, idx) => (
-                <div 
-                  key={idx} 
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    idx === currentPage ? 'bg-blue-500' : 'bg-gray-300'
-                  } ${teachers.length <= itemsPerPage ? 'opacity-0' : 'opacity-100'}`} 
-                />
-             ))}
+        {/* Navigation Controls */}
+        <div className="p-6 border-t border-gray-50 bg-gray-50/50 flex flex-col items-center justify-center gap-4">
+          <div className="flex items-center gap-6">
+            <button
+              onClick={prevPage}
+              disabled={teachers.length <= itemsPerPage}
+              className={`p-3 rounded-full transition-all ${
+                teachers.length <= itemsPerPage
+                  ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                  : 'bg-white text-gray-700 shadow-md hover:bg-blue-50 hover:text-blue-600 hover:scale-110 active:scale-95'
+              }`}
+            >
+              <ChevronLeft size={24} />
+            </button>
+            
+            <div className="flex gap-2">
+              {Array.from({ length: totalPages }).map((_, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      idx === currentPage ? 'bg-blue-500' : 'bg-gray-300'
+                    } ${teachers.length <= itemsPerPage ? 'opacity-0' : 'opacity-100'}`} 
+                  />
+              ))}
+            </div>
+
+            <button
+              onClick={nextPage}
+              disabled={teachers.length <= itemsPerPage}
+              className={`p-3 rounded-full transition-all ${
+                teachers.length <= itemsPerPage
+                  ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                  : 'bg-white text-gray-700 shadow-md hover:bg-blue-50 hover:text-blue-600 hover:scale-110 active:scale-95'
+              }`}
+            >
+              <ChevronRight size={24} />
+            </button>
           </div>
-
-          <button
-            onClick={nextPage}
-            disabled={teachers.length <= itemsPerPage}
-            className={`p-3 rounded-full transition-all ${
-              teachers.length <= itemsPerPage
-                ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                : 'bg-white text-gray-700 shadow-md hover:bg-blue-50 hover:text-blue-600 hover:scale-110 active:scale-95'
-            }`}
-          >
-            <ChevronRight size={24} />
-          </button>
-        </div>
-
-        {/* Quote */}
-        <div className="pb-6 text-center">
-            <p className="text-[10px] text-gray-400 italic">"Donde su niño es lo más importante"</p>
+          
+          {/* Quote moved inside footer */}
+          <div className="text-center mt-2">
+              <p className="text-[10px] text-gray-400 italic">"Donde su niño es lo más importante"</p>
+          </div>
         </div>
       </div>
     </div>,

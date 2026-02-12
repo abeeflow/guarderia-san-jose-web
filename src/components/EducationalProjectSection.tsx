@@ -48,8 +48,10 @@ export default function EducationalProjectSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <section className="min-h-screen flex flex-col justify-center py-10 lg:py-12 bg-[#f5f5f8] scroll-mt-[81px]" id="educational-project">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+    <section className="h-screen w-full flex flex-col bg-[#f5f5f8] pt-[80px] overflow-hidden scroll-mt-0" id="educational-project">
+      <div className="flex-1 w-full overflow-y-auto">
+        <div className="min-h-full flex flex-col justify-center items-center py-8 lg:py-12">
+          <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-10">
         
         {/* Main Title */}
         <div className="text-center mb-6">
@@ -131,6 +133,8 @@ export default function EducationalProjectSection() {
           ))}
         </div>
 
+          </div>
+        </div>
       </div>
       
       <TeachersModal 

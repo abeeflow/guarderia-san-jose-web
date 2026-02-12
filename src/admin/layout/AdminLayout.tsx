@@ -54,10 +54,13 @@ export default function AdminLayout() {
         {/* Logo */}
         <div className="p-6 flex items-center justify-between">
           <div className={`flex items-center gap-3 ${!isSidebarOpen && 'hidden'}`}>
-             <div className="w-8 h-8 bg-[#1E1B4B] rounded-lg flex items-center justify-center text-white">
-                <Smile size={20} />
+             <div className="w-10 h-10 bg-white rounded-lg p-1 flex items-center justify-center shrink-0">
+                <img src="/logo.png" alt="San José" className="w-full h-full object-contain" />
              </div>
-             <h1 className="font-bold text-xl text-white">EduCare</h1>
+             <div className="flex flex-col">
+                <h1 className="font-bold text-sm text-white leading-tight">Guardería Jardín</h1>
+                <span className="text-xs text-blue-200">Bilingüe San José</span>
+             </div>
           </div>
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}

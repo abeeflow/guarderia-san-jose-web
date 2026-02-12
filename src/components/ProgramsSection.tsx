@@ -45,10 +45,12 @@ const programs = [
 
 export default function ProgramsSection() {
   return (
-    <section className="min-h-screen flex flex-col justify-center py-16 lg:py-24 bg-white scroll-mt-[81px]" id="programs">
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
+    <section className="h-screen w-full flex flex-col bg-white pt-[80px] overflow-hidden scroll-mt-0" id="programs">
+      <div className="flex-1 w-full overflow-y-auto">
+        <div className="min-h-full flex flex-col justify-center items-center py-8 lg:py-12">
+          <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-10">
         {/* Header de la sección */}
-        <div className="flex flex-col items-center text-center gap-6 mb-16">
+        <div className="flex flex-col items-center text-center gap-6 mb-12">
           <div className="relative">
             <h2 className="text-[#111118] text-3xl lg:text-5xl font-extrabold tracking-tight">
               Nuestros Programas Educativos
@@ -107,6 +109,8 @@ export default function ProgramsSection() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
         </div>
       </div>
     </section>
