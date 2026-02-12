@@ -2,57 +2,16 @@ import {
   UserPlus, 
   CheckCircle2, 
   Send, 
-  Plus, 
-  Shield, 
-  Edit2, 
-  Trash2, 
-  PlayCircle,
-  ArrowRight,
-  Download
+  ArrowRight
 } from 'lucide-react';
-import { OptimizedImage } from '../../components/OptimizedImage';
 
 export default function Dashboard() {
-  // Mock data
-  const users = [
-    { 
-      id: 1, 
-      name: 'Admin Principal', 
-      email: 'admin@guarderia.com', 
-      role: 'Administrador', 
-      roleIcon: Shield,
-      status: 'Activo',
-      statusColor: 'bg-[#EBFDF5] text-[#00A76F]',
-      image: 'https://i.pravatar.cc/150?img=11'
-    },
-    { 
-      id: 2, 
-      name: 'Directora Académica', 
-      email: 'directora@guarderia.com', 
-      role: 'Editor Académico', 
-      roleIcon: Edit2,
-      status: 'Activo',
-      statusColor: 'bg-[#EBFDF5] text-[#00A76F]',
-      image: 'https://i.pravatar.cc/150?img=5'
-    },
-    { 
-      id: 3, 
-      name: 'Profesor Juan', 
-      email: 'juan.prof@guarderia.com', 
-      role: 'Profesor', 
-      roleIcon: Shield, // Using Shield as generic role icon placeholder if specific icon not needed
-      status: 'Inactivo',
-      statusColor: 'bg-gray-100 text-gray-500',
-      image: 'https://i.pravatar.cc/150?img=3'
-    },
-  ];
-
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Welcome Header */}
       <div>
         <h1 className="text-3xl font-serif text-[#111118] mb-1">Bienvenido</h1>
-        <p className="text-gray-500 text-sm"></p>
+        <p className="text-gray-500 text-sm">Panel de administración general.</p>
       </div>
 
       {/* Action Cards */}
