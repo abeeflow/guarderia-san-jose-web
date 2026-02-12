@@ -1,11 +1,49 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
-  UserPlus, 
-  CheckCircle2, 
-  Send, 
-  ArrowRight
+  ArrowRight,
+  Calendar,
+  Users,
+  Image as ImageIcon
 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const [metrics, setMetrics] = useState({
+    events: 0,
+    users: 0,
+    installations: 0
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMetrics();
+  }, []);
+
+  const fetchMetrics = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Fetch all metrics in parallel
+      const [eventsResult, usersResult, installationsResult] = await Promise.all([
+        supabase.from('eventos').select('id', { count: 'exact', head: true }),
+        supabase.from('users').select('id', { count: 'exact', head: true }),
+        supabase.from('instalaciones').select('id', { count: 'exact', head: true })
+      ]);
+
+      setMetrics({
+        events: eventsResult.count || 0,
+        users: usersResult.count || 0,
+        installations: installationsResult.count || 0
+      });
+    } catch (error) {
+      console.error('Error fetching metrics:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Welcome Header */}
@@ -14,56 +52,79 @@ export default function Dashboard() {
         <p className="text-gray-500 text-sm">Panel de administración general.</p>
       </div>
 
-      {/* Action Cards */}
+      {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Card 1: Register Child */}
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all group">
-          <div className="flex items-start justify-between mb-4">
-            <div className="bg-[#EBFDF5] p-3 rounded-lg text-[#00A76F]">
-              <UserPlus size={24} />
+        {/* Events Metric */}
+        <div 
+          onClick={() => navigate('/admin/events')}
+          className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Eventos</p>
+              {isLoading ? (
+                <div className="h-8 w-16 bg-gray-100 rounded animate-pulse"></div>
+              ) : (
+                <p className="text-3xl font-bold text-[#111118]">{metrics.events}</p>
+              )}
+            </div>
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+              <Calendar className="text-blue-500" size={24} />
             </div>
           </div>
-          <h3 className="text-lg font-bold text-[#111118] mb-2">Registrar Niño</h3>
-          <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-            Alta de nuevos alumnos en la base de datos.
-          </p>
-          <a href="#" className="flex items-center gap-2 text-[#00A76F] text-xs font-bold tracking-wider hover:gap-3 transition-all">
-            COMENZAR <ArrowRight size={14} />
-          </a>
+          <div className="flex items-center gap-2 text-blue-500 text-xs font-bold tracking-wider group-hover:gap-3 transition-all">
+            Ir a sección <ArrowRight size={14} />
+          </div>
         </div>
 
-        {/* Card 2: Attendance */}
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all group">
-          <div className="flex items-start justify-between mb-4">
-            <div className="bg-gray-50 p-3 rounded-lg text-gray-600">
-              <CheckCircle2 size={24} />
+        {/* Users Metric */}
+        <div 
+          onClick={() => navigate('/admin/users')}
+          className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Usuarios</p>
+              {isLoading ? (
+                <div className="h-8 w-16 bg-gray-100 rounded animate-pulse"></div>
+              ) : (
+                <p className="text-3xl font-bold text-[#111118]">{metrics.users}</p>
+              )}
+            </div>
+            <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center group-hover:bg-green-100 transition-colors">
+              <Users className="text-green-500" size={24} />
             </div>
           </div>
-          <h3 className="text-lg font-bold text-[#111118] mb-2">Pasar Asistencia</h3>
-          <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-            Control diario de presencia por grupos.
-          </p>
-          <a href="#" className="flex items-center gap-2 text-[#111118] text-xs font-bold tracking-wider hover:gap-3 transition-all">
-            ABRIR PLANILLA <ArrowRight size={14} />
-          </a>
+          <div className="flex items-center gap-2 text-green-500 text-xs font-bold tracking-wider group-hover:gap-3 transition-all">
+            Ir a sección <ArrowRight size={14} />
+          </div>
         </div>
 
-        {/* Card 3: Communication */}
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all group">
-          <div className="flex items-start justify-between mb-4">
-            <div className="bg-gray-50 p-3 rounded-lg text-gray-600">
-              <Send size={24} />
+        {/* Installations Photos Metric */}
+        <div 
+          onClick={() => navigate('/admin/installations')}
+          className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Fotos Instalaciones</p>
+              {isLoading ? (
+                <div className="h-8 w-16 bg-gray-100 rounded animate-pulse"></div>
+              ) : (
+                <p className="text-3xl font-bold text-[#111118]">{metrics.installations}</p>
+              )}
+            </div>
+            <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center group-hover:bg-purple-100 transition-colors">
+              <ImageIcon className="text-purple-500" size={24} />
             </div>
           </div>
-          <h3 className="text-lg font-bold text-[#111118] mb-2">Comunicación</h3>
-          <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-            Enviar notificaciones y avisos a padres.
-          </p>
-          <a href="#" className="flex items-center gap-2 text-[#111118] text-xs font-bold tracking-wider hover:gap-3 transition-all">
-            REDACTAR <ArrowRight size={14} />
-          </a>
+          <div className="flex items-center gap-2 text-purple-500 text-xs font-bold tracking-wider group-hover:gap-3 transition-all">
+            Ir a sección <ArrowRight size={14} />
+          </div>
         </div>
       </div>
+
+      
 
       
 

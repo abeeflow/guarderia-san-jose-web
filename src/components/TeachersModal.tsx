@@ -4,13 +4,10 @@ import { X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { OptimizedImage } from './OptimizedImage';
 
-interface Teacher {
+interface Installation {
   id: number;
-  nombre: string;
-  apellidos: string;
-  curso: string;
-  img_maestro: string;
-  activo: boolean;
+  img_insta: string | null;
+  created_at?: string;
 }
 
 interface TeachersModalProps {
@@ -19,36 +16,35 @@ interface TeachersModalProps {
 }
 
 export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
-  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [installations, setInstallations] = useState<Installation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 1;
 
   useEffect(() => {
     if (isOpen) {
-      fetchTeachers();
+      fetchInstallations();
     }
   }, [isOpen]);
 
-  const fetchTeachers = async () => {
+  const fetchInstallations = async () => {
     try {
       setIsLoading(true);
       const { data, error } = await supabase
-        .from('maestros')
-        .select('*')
-        .eq('activo', true)
-        .order('id', { ascending: true });
+        .from('instalaciones')
+        .select('id, img_insta, created_at')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setTeachers(data || []);
+      setInstallations((data || []).filter(inst => inst.img_insta !== null));
     } catch (error) {
-      console.error('Error fetching teachers:', error);
+      console.error('Error fetching installations:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const totalPages = Math.ceil(teachers.length / itemsPerPage);
+  const totalPages = Math.ceil(installations.length / itemsPerPage);
 
   const nextPage = () => {
     setCurrentPage((prev) => (prev + 1) % totalPages);
@@ -58,7 +54,7 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
     setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
   };
 
-  const currentTeachers = teachers.slice(
+  const currentInstallations = installations.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -100,24 +96,23 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
             <div className="flex justify-center items-center h-64">
               <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
             </div>
-          ) : teachers.length === 0 ? (
+          ) : installations.length === 0 ? (
             <div className="text-center text-gray-500 py-12">
               <p>No hay instalaciones disponibles en este momento.</p>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center w-full h-full">
               {/* Image Container */}
-              <div className="relative w-full md:w-[70%] h-[40vh] md:h-[50vh] rounded-xl overflow-hidden shadow-lg bg-gray-50 border border-gray-100 mb-6">
-                <OptimizedImage
-                  src={currentTeachers[0].img_maestro}
-                  alt={`${currentTeachers[0].nombre || ''} ${currentTeachers[0].apellidos || ''}`}
-                  className="w-full h-full"
-                  imageClassName="object-contain w-full h-full"
-                />
-              </div>
-              
-              {/* Optional Info */}
-              
+              {currentInstallations[0]?.img_insta && (
+                <div className="relative w-full md:w-[70%] h-[40vh] md:h-[50vh] rounded-xl overflow-hidden shadow-lg bg-gray-50 border border-gray-100 mb-6">
+                  <OptimizedImage
+                    src={currentInstallations[0].img_insta}
+                    alt={`Instalación ${currentInstallations[0].id}`}
+                    className="w-full h-full"
+                    imageClassName="object-cover w-full h-full"
+                  />
+                </div>
+              )}
             </div>
           )}
 
@@ -128,9 +123,9 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
           <div className="flex items-center gap-6">
             <button
               onClick={prevPage}
-              disabled={teachers.length <= itemsPerPage}
+              disabled={installations.length <= itemsPerPage}
               className={`p-3 rounded-full transition-all ${
-                teachers.length <= itemsPerPage
+                installations.length <= itemsPerPage
                   ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
                   : 'bg-white text-gray-700 shadow-md hover:bg-blue-50 hover:text-blue-600 hover:scale-110 active:scale-95'
               }`}
@@ -144,16 +139,16 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
                     key={idx} 
                     className={`w-2 h-2 rounded-full transition-colors ${
                       idx === currentPage ? 'bg-blue-500' : 'bg-gray-300'
-                    } ${teachers.length <= itemsPerPage ? 'opacity-0' : 'opacity-100'}`} 
+                    } ${installations.length <= itemsPerPage ? 'opacity-0' : 'opacity-100'}`} 
                   />
               ))}
             </div>
 
             <button
               onClick={nextPage}
-              disabled={teachers.length <= itemsPerPage}
+              disabled={installations.length <= itemsPerPage}
               className={`p-3 rounded-full transition-all ${
-                teachers.length <= itemsPerPage
+                installations.length <= itemsPerPage
                   ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
                   : 'bg-white text-gray-700 shadow-md hover:bg-blue-50 hover:text-blue-600 hover:scale-110 active:scale-95'
               }`}

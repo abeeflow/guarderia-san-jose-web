@@ -7,7 +7,9 @@ import {
   Menu, 
   Settings,
   User,
-  X
+  X,
+  Building2,
+  Home
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -22,10 +24,11 @@ export default function AdminLayout() {
   };
 
   const mainNavItems = [
-    // { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/admin/dashboard', icon: Home, label: 'Inicio' },
     { path: '/admin/events', icon: Calendar, label: 'Eventos' },
     { path: '/admin/users', icon: Users, label: 'Usuarios' },
     { path: '/admin/teachers', icon: User, label: 'Maestros' },
+    { path: '/admin/installations', icon: Building2, label: 'Fotos Instalaciones' },
     // { path: '/admin/kids', icon: Baby, label: 'Niños' },
     // { path: '/admin/groups', icon: UsersRound, label: 'Grupos' },
   ];

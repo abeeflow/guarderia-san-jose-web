@@ -19,6 +19,7 @@ import GroupsAdmin from './admin/pages/GroupsAdmin';
 import SettingsAdmin from './admin/pages/SettingsAdmin';
 import ProtectedRoute from './admin/components/ProtectedRoute';
 import TeachersAdmin from './admin/pages/TeachersAdmin';
+import InstallationsAdmin from './admin/pages/InstallationsAdmin';
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
               <Route path="events" element={<EventsAdmin />} />
               <Route path="users" element={<UsersAdmin />} />
               <Route path="teachers" element={<TeachersAdmin />} />
+              <Route path="installations" element={<InstallationsAdmin />} />
               <Route path="kids" element={<KidsAdmin />} />
               <Route path="groups" element={<GroupsAdmin />} />
               <Route path="settings" element={<SettingsAdmin />} />
