@@ -69,12 +69,12 @@ export default function Login() {
           </div>
           
           <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-4">
-            Gestión escolar <br />
-            <span className="italic font-light">eficiente y segura.</span>
+            Gestión de Sistema <br />
+            
           </h1>
           
           <p className="text-blue-100 text-lg leading-relaxed max-w-md">
-            Plataforma centralizada para la coordinación académica, administrativa y comunicación institucional.
+            Plataforma centralizada para la gestión del sistema de la guardería.
           </p>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function Login() {
                <OptimizedImage src="/logo.png" alt="Logo" className="w-full h-full" imageClassName="object-contain" priority={true} />
             </div>
             <h2 className="text-2xl font-bold text-[#111118] mb-2">Panel de Administración</h2>
-            <p className="text-gray-500">Ingresa al sistema de gestión de personal</p>
+            <p className="text-gray-500">Ingresa al sistema de gestión</p>
           </div>
 
           {error && (
@@ -170,13 +170,7 @@ export default function Login() {
               ¿Problemas de acceso? <a href="#" className="font-bold text-blue-600 hover:underline">Soporte Técnico TI</a>
             </p>
             
-            <div className="flex items-center justify-center gap-4 text-[10px] font-bold text-gray-300 tracking-widest uppercase">
-              <span>Dashboard</span>
-              <span>•</span>
-              <span>RRHH</span>
-              <span>•</span>
-              <span>Seguridad</span>
-            </div>
+            
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import EventsSection from '../components/EventsSection';
 import EducationalProjectSection from '../components/EducationalProjectSection';
 import ProgramsSection from '../components/ProgramsSection';
+import { Instagram, Music2, Facebook } from 'lucide-react';
 
 // Map Modal Component
 const MapModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
@@ -112,21 +113,28 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Badge inside card for mobile, hidden on desktop if desired, or kept as detail */}
-                <div className="flex items-center gap-3 mt-4 pt-6 border-t border-gray-100">
-                   <span className="material-symbols-outlined text-green-500 text-3xl">verified_user</span>
-                   <div>
-                      <p className="text-xs font-black text-gray-400 uppercase tracking-wider">INSTALACIÓN ACREDITADA</p>
-                      <p className="text-sm font-bold text-gray-800">Ministerio de Educación</p>
-                   </div>
+                {/* Certifications Logos */}
+                <div className="flex items-center justify-center gap-6 lg:gap-8 mt-4 pt-6 border-t border-gray-100">
+                  <img 
+                    src="/ministerio.png" 
+                    alt="Ministerio de Educación" 
+                    className="h-12 lg:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+                  />
+                  <img 
+                    src="/certificado_1.png" 
+                    alt="Certificación 1" 
+                    className="h-12 lg:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+                  />
+                  <img 
+                    src="/certificado_2.png" 
+                    alt="Certificación 2" 
+                    className="h-12 lg:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+                  />
                 </div>
              </div>
 
              {/* Image Content (Right Side of Card - img_portada_3) */}
              <div className="w-[45%] relative hidden lg:block">
-                {/* Slanted divider effect */}
-                <div className="absolute inset-y-0 left-0 w-12 bg-white/95 transform -skew-x-6 origin-bottom -ml-6 z-10"></div>
-                
                 <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_3.png")' }}></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
              </div>
@@ -148,7 +156,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16">
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-4">
-                <h2 className="text-3xl font-extrabold tracking-tight">Visita Nuestro Campus</h2>
+                <h2 className="text-3xl font-extrabold tracking-tight">Visitanos</h2>
                 <p className="text-[#5f5f8c]">Estamos ubicados en el corazon de la ciudad, proporcionando un ambiente seguro y accesible para tus pequenos.</p>
               </div>
               <div className="flex flex-col gap-6">
@@ -183,6 +191,43 @@ export default function Home() {
                   <div>
                     <p className="font-bold">Correo Electronico</p>
                     <p className="text-sm text-gray-500">guarderiajardinbilinguesanjose@gmail.com</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-primary">share</span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="font-bold">Síguenos</p>
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                      <a 
+                        href="https://www.instagram.com/guarderiajardin.sanjose?igsh=Mmx3dDRzNXlhaXB5" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors"
+                      >
+                        <Instagram size={18} className="text-primary" />
+                        <span>Instagram</span>
+                      </a>
+                      <a 
+                        href="https://www.tiktok.com/@guarderiajardin.sanjose?_r=1&_t=ZS-93x3oQ94rT6" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors"
+                      >
+                        <Music2 size={18} className="text-primary" />
+                        <span>TikTok</span>
+                      </a>
+                      <a 
+                        href="https://www.facebook.com/guarderiajardinsanjose" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors"
+                      >
+                        <Facebook size={18} className="text-primary" />
+                        <span>Facebook</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

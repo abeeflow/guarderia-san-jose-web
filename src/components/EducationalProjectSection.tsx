@@ -41,6 +41,27 @@ const projectItems = [
     hoverBorder: "hover:border-purple-400",
     bg: "bg-purple-50",
     shadow: "shadow-purple-100"
+  },
+  {
+    id: 5,
+    text: "PROGRAMA CRECEMOS EN VALORES",
+    image: "/crecemos.png",
+    color: "text-pink-500",
+    borderColor: "border-pink-200",
+    hoverBorder: "hover:border-pink-400",
+    bg: "bg-pink-50",
+    shadow: "shadow-pink-100"
+  },
+  {
+    id: 6,
+    text: "EDUCACIÓN BILINGÜE",
+    subtitle: "Inglés - Francés",
+    icon: "translate",
+    color: "text-indigo-500",
+    borderColor: "border-indigo-200",
+    hoverBorder: "hover:border-indigo-400",
+    bg: "bg-indigo-50",
+    shadow: "shadow-indigo-100"
   }
 ];
 
@@ -48,8 +69,8 @@ export default function EducationalProjectSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <section className="h-screen w-full flex flex-col bg-[#f5f5f8] pt-[80px] overflow-hidden scroll-mt-0" id="educational-project">
-      <div className="flex-1 w-full overflow-y-auto">
+    <section className="min-h-screen w-full flex flex-col bg-[#f5f5f8] pt-[80px] overflow-hidden scroll-mt-0" id="educational-project">
+      <div className="flex-1 w-full overflow-visible">
         <div className="min-h-full flex flex-col justify-center items-center py-8 lg:py-12">
           <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-10">
         
@@ -112,19 +133,39 @@ export default function EducationalProjectSection() {
                 ${item.borderColor} ${item.hoverBorder} ${item.shadow}
               `}
             >
-              {/* Icon Circle */}
-              <div className={`
-                w-12 h-12 rounded-full flex items-center justify-center 
-                text-2xl shadow-sm mb-3 transition-transform duration-500 group-hover:scale-110
-                ${item.bg} ${item.color}
-              `}>
-                <span className="material-symbols-outlined">{item.icon}</span>
-              </div>
+              {/* Icon Circle or Image */}
+              {item.image ? (
+                <div 
+                  className="relative w-14 h-14 rounded-full flex items-center justify-center overflow-hidden mb-3 transition-all duration-300 ease shadow-sm group-hover:scale-[2.5] group-hover:z-10 group-hover:shadow-xl"
+                  style={{ backgroundColor: '#FFF3E0' }}
+                >
+                  <img 
+                    src={item.image} 
+                    alt={item.text}
+                    className="h-9 w-auto object-contain"
+                  />
+                </div>
+              ) : (
+                <div className={`
+                  w-12 h-12 rounded-full flex items-center justify-center 
+                  text-2xl shadow-sm mb-3 transition-transform duration-500 group-hover:scale-110
+                  ${item.bg} ${item.color}
+                `}>
+                  <span className="material-symbols-outlined">{item.icon}</span>
+                </div>
+              )}
 
               {/* Text */}
               <h3 className={`text-base font-bold uppercase tracking-tight ${item.color} max-w-xs leading-tight`}>
                 {item.text}
               </h3>
+              
+              {/* Subtitle (if exists) */}
+              {item.subtitle && (
+                <p className={`text-sm font-medium ${item.color} mt-1 opacity-80`}>
+                  {item.subtitle}
+                </p>
+              )}
               
               {/* Background Decoration */}
               <div className={`absolute top-3 right-3 w-2 h-2 rounded-full ${item.bg} opacity-50`}></div>

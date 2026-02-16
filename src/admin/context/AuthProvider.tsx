@@ -8,7 +8,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   const login = (userData: AuthLoginData) => {
-    const newUser: User = { username: userData.name || userData.email || 'Admin', role: 'admin' };
+    const newUser: User = { 
+      username: userData.name || userData.email || 'Admin', 
+      name: userData.name,
+      email: userData.email,
+      role: 'admin' 
+    };
     setUser(newUser);
     localStorage.setItem('admin_user', JSON.stringify(newUser));
   };

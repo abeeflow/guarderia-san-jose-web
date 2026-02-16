@@ -8,6 +8,8 @@ interface Installation {
   id: number;
   img_insta: string | null;
   created_at?: string;
+  nombre_imagen?: string | null;
+  orden?: number | null;
 }
 
 interface TeachersModalProps {
@@ -27,16 +29,100 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
     }
   }, [isOpen]);
 
+  // Function to format image name from URL
+  const formatImageName = (url: string): string => {
+    try {
+      // Extract filename from URL
+      const urlParts = url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      
+      // Remove extension
+      const nameWithoutExt = fileName.split('.').slice(0, -1).join('.');
+      
+      // Remove special characters (_, -, etc.) and replace with spaces
+      const cleanedName = nameWithoutExt
+        .replace(/[_-]/g, ' ')
+        .replace(/[^\w\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      // Convert to uppercase
+      return cleanedName.toUpperCase();
+    } catch (error) {
+      return 'IMAGEN';
+    }
+  };
+
+  // Get display name (custom name or formatted from URL)
+  const getDisplayName = (installation: Installation): string => {
+    if (installation.nombre_imagen) {
+      return installation.nombre_imagen.toUpperCase();
+    }
+    if (installation.img_insta) {
+      return formatImageName(installation.img_insta);
+    }
+    return 'IMAGEN';
+  };
+
   const fetchInstallations = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
+      // Try to fetch with orden and nombre_imagen fields
+      let { data, error } = await supabase
         .from('instalaciones')
-        .select('id, img_insta, created_at')
+        .select('id, img_insta, created_at, nombre_imagen, orden')
         .order('created_at', { ascending: false });
 
+      // If error about missing columns, try without them
+      if (error && (error.message?.includes('nombre_imagen') || error.message?.includes('orden') || error.message?.includes('does not exist'))) {
+        // Try with orden only
+        let result: any = await supabase
+          .from('instalaciones')
+          .select('id, img_insta, created_at, orden')
+          .order('created_at', { ascending: false });
+        
+        if (result.error && (result.error.message?.includes('orden') || result.error.message?.includes('does not exist'))) {
+          // orden doesn't exist, use basic fields only
+          result = await supabase
+            .from('instalaciones')
+            .select('id, img_insta, created_at')
+            .order('created_at', { ascending: false });
+        }
+        
+        data = result.data;
+        error = result.error;
+      }
+
       if (error) throw error;
-      setInstallations((data || []).filter(inst => inst.img_insta !== null));
+
+      // Normalize data: ensure all fields exist (set to null if missing)
+      const installationsData: Installation[] = ((data || []).filter(inst => inst.img_insta !== null)).map((inst: any) => ({
+        id: inst.id,
+        img_insta: inst.img_insta,
+        created_at: inst.created_at,
+        nombre_imagen: inst.nombre_imagen ?? null,
+        orden: inst.orden ?? null
+      }));
+      
+      // Sort: items with orden first (ascending), then items without orden by created_at
+      installationsData.sort((a, b) => {
+        // Both have orden
+        if (a.orden !== null && a.orden !== undefined && b.orden !== null && b.orden !== undefined) {
+          return a.orden - b.orden;
+        }
+        // Only a has orden
+        if (a.orden !== null && a.orden !== undefined && (b.orden === null || b.orden === undefined)) {
+          return -1;
+        }
+        // Only b has orden
+        if ((a.orden === null || a.orden === undefined) && b.orden !== null && b.orden !== undefined) {
+          return 1;
+        }
+        // Both are null, sort by created_at
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+      });
+
+      setInstallations(installationsData);
     } catch (error) {
       console.error('Error fetching installations:', error);
     } finally {
@@ -104,13 +190,22 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
             <div className="flex flex-col items-center justify-center w-full h-full">
               {/* Image Container */}
               {currentInstallations[0]?.img_insta && (
-                <div className="relative w-full md:w-[70%] h-[40vh] md:h-[50vh] rounded-xl overflow-hidden shadow-lg bg-gray-50 border border-gray-100 mb-6">
-                  <OptimizedImage
-                    src={currentInstallations[0].img_insta}
-                    alt={`Instalación ${currentInstallations[0].id}`}
-                    className="w-full h-full"
-                    imageClassName="object-cover w-full h-full"
-                  />
+                <div className="relative w-full md:w-[70%] mb-6">
+                  {/* Image */}
+                  <div className="relative h-[40vh] md:h-[50vh] rounded-xl overflow-hidden shadow-lg bg-gray-50 border border-gray-100 mb-3">
+                    <OptimizedImage
+                      src={currentInstallations[0].img_insta}
+                      alt={getDisplayName(currentInstallations[0])}
+                      className="w-full h-full"
+                      imageClassName="object-cover w-full h-full"
+                    />
+                  </div>
+                  {/* Image Name */}
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-[#1E1B4B]">
+                      {getDisplayName(currentInstallations[0])}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

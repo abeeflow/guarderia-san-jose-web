@@ -45,8 +45,8 @@ const programs = [
 
 export default function ProgramsSection() {
   return (
-    <section className="h-screen w-full flex flex-col bg-white pt-[80px] overflow-hidden scroll-mt-0" id="programs">
-      <div className="flex-1 w-full overflow-y-auto">
+    <section className="min-h-screen w-full flex flex-col bg-white pt-[80px] overflow-hidden scroll-mt-0" id="programs">
+      <div className="flex-1 w-full overflow-visible">
         <div className="min-h-full flex flex-col justify-center items-center py-8 lg:py-12">
           <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-10">
         {/* Header de la sección */}

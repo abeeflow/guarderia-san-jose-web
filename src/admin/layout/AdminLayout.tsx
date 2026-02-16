@@ -14,9 +14,24 @@ import {
 import { useState } from 'react';
 
 export default function AdminLayout() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    if (user?.name) {
+      const names = user.name.split(' ');
+      if (names.length >= 2) {
+        return (names[0][0] + names[1][0]).toUpperCase();
+      }
+      return user.name.substring(0, 2).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.substring(0, 2).toUpperCase();
+    }
+    return 'AP';
+  };
 
   const handleLogout = () => {
     logout();
@@ -131,15 +146,15 @@ export default function AdminLayout() {
           <div className={`flex items-center gap-3 ${!isSidebarOpen ? 'justify-center' : ''}`}>
             <div className="relative">
                <div className="w-10 h-10 rounded-full bg-[#FFD8A8] flex items-center justify-center text-[#FF922B] font-bold">
-                  AP
+                  {getUserInitials()}
                </div>
                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0F172A] rounded-full"></span>
             </div>
             
             {isSidebarOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white truncate">Admin Principal</p>
-                <p className="text-xs text-gray-400 truncate">admin@educare.com</p>
+                <p className="text-sm font-bold text-white truncate">{user?.name || user?.username || 'Usuario'}</p>
+                <p className="text-xs text-gray-400 truncate">{user?.email || 'Sin email'}</p>
               </div>
             )}
             {isSidebarOpen && (

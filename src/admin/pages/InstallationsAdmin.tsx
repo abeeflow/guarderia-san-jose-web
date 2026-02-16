@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Trash2, Image as ImageIcon, X, Info } from 'lucide-react';
+import { Plus, Trash2, Image as ImageIcon, X, Info, Edit2, GripVertical, Check } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import AlertModal from '../components/AlertModal';
 import ConfirmModal from '../components/ConfirmModal';
@@ -9,12 +9,17 @@ interface Installation {
   id: number;
   img_insta: string | null;
   created_at?: string;
+  nombre_imagen?: string | null;
+  orden?: number | null;
 }
 
 export default function InstallationsAdmin() {
   const [installations, setInstallations] = useState<Installation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingNameId, setEditingNameId] = useState<number | null>(null);
+  const [editingNameValue, setEditingNameValue] = useState('');
+  const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const [alertConfig, setAlertConfig] = useState({
     isOpen: false,
     type: 'success' as 'success' | 'error' | 'warning',
@@ -37,13 +42,64 @@ export default function InstallationsAdmin() {
   const fetchInstallations = useCallback(async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      // Try to fetch with all fields first
+      let { data, error } = await supabase
         .from('instalaciones')
-        .select('id, img_insta, created_at')
+        .select('id, img_insta, created_at, nombre_imagen, orden')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setInstallations(data || []);
+      // If error about missing columns, try without them
+      if (error && (error.message?.includes('nombre_imagen') || error.message?.includes('orden') || error.message?.includes('does not exist'))) {
+        // Try with orden only (without nombre_imagen)
+        let result: any = await supabase
+          .from('instalaciones')
+          .select('id, img_insta, created_at, orden')
+          .order('created_at', { ascending: false });
+        
+        if (result.error && (result.error.message?.includes('orden') || result.error.message?.includes('does not exist'))) {
+          // orden doesn't exist, use basic fields only
+          result = await supabase
+            .from('instalaciones')
+            .select('id, img_insta, created_at')
+            .order('created_at', { ascending: false });
+        }
+        
+        data = result.data;
+        error = result.error;
+      }
+
+      if (error) {
+        throw error;
+      }
+      
+      // Normalize data: ensure all fields exist (set to null if missing)
+      const installationsData: Installation[] = (data || []).map((inst: any) => ({
+        id: inst.id,
+        img_insta: inst.img_insta,
+        created_at: inst.created_at,
+        nombre_imagen: inst.nombre_imagen ?? null,
+        orden: inst.orden ?? null
+      }));
+      
+      // Sort: items with orden first (ascending), then items without orden by created_at
+      installationsData.sort((a, b) => {
+        // Both have orden
+        if (a.orden !== null && a.orden !== undefined && b.orden !== null && b.orden !== undefined) {
+          return a.orden - b.orden;
+        }
+        // Only a has orden
+        if (a.orden !== null && a.orden !== undefined && (b.orden === null || b.orden === undefined)) {
+          return -1;
+        }
+        // Only b has orden
+        if ((a.orden === null || a.orden === undefined) && b.orden !== null && b.orden !== undefined) {
+          return 1;
+        }
+        // Both are null, sort by created_at
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+      });
+      
+      setInstallations(installationsData);
     } catch (error) {
       console.error('Error fetching installations:', error);
       showAlert('error', 'Error', 'No se pudo cargar las fotos de instalaciones.');
@@ -55,6 +111,161 @@ export default function InstallationsAdmin() {
   useEffect(() => {
     fetchInstallations();
   }, [fetchInstallations]);
+
+  // Function to format image name from URL
+  const formatImageName = (url: string): string => {
+    try {
+      // Extract filename from URL
+      const urlParts = url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      
+      // Remove extension
+      const nameWithoutExt = fileName.split('.').slice(0, -1).join('.');
+      
+      // Remove special characters (_, -, etc.) and replace with spaces
+      const cleanedName = nameWithoutExt
+        .replace(/[_-]/g, ' ')
+        .replace(/[^\w\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      // Convert to uppercase
+      return cleanedName.toUpperCase();
+    } catch (error) {
+      return 'IMAGEN';
+    }
+  };
+
+  // Get display name (custom name or formatted from URL)
+  const getDisplayName = (installation: Installation): string => {
+    if (installation.nombre_imagen) {
+      return installation.nombre_imagen.toUpperCase();
+    }
+    if (installation.img_insta) {
+      return formatImageName(installation.img_insta);
+    }
+    return 'IMAGEN';
+  };
+
+  // Handle name edit
+  const handleStartEditName = (id: number, currentName: string) => {
+    setEditingNameId(id);
+    setEditingNameValue(currentName);
+  };
+
+  const handleSaveName = async (id: number) => {
+    try {
+      // Try to update nombre_imagen field
+      const { error } = await supabase
+        .from('instalaciones')
+        .update({ nombre_imagen: editingNameValue.trim() || null })
+        .eq('id', id);
+
+      if (error) {
+        // If field doesn't exist, just update local state
+        if (error.message?.includes('nombre_imagen') || error.message?.includes('does not exist') || error.code === '42703') {
+          console.warn('Campo nombre_imagen no existe en la base de datos, el nombre se mantendrá solo en esta sesión');
+          // Update local state only
+          setInstallations(prev => prev.map(inst => 
+            inst.id === id 
+              ? { ...inst, nombre_imagen: editingNameValue.trim() || null }
+              : inst
+          ));
+          setEditingNameId(null);
+          setEditingNameValue('');
+          showAlert('warning', 'Advertencia', 'El nombre se ha actualizado en esta sesión. Nota: El campo "nombre_imagen" no existe en la base de datos.');
+          return;
+        }
+        throw error;
+      }
+
+      setInstallations(prev => prev.map(inst => 
+        inst.id === id 
+          ? { ...inst, nombre_imagen: editingNameValue.trim() || null }
+          : inst
+      ));
+      
+      setEditingNameId(null);
+      setEditingNameValue('');
+      showAlert('success', 'Nombre Actualizado', 'El nombre de la imagen ha sido actualizado correctamente.');
+    } catch (error) {
+      console.error('Error updating name:', error);
+      showAlert('error', 'Error', 'No se pudo actualizar el nombre. Intenta nuevamente.');
+    }
+  };
+
+  const handleCancelEditName = () => {
+    setEditingNameId(null);
+    setEditingNameValue('');
+  };
+
+  // Drag and Drop handlers
+  const handleDragStart = (e: React.DragEvent, id: number) => {
+    setDraggedItem(id);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', id.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetId: number) => {
+    e.preventDefault();
+    
+    if (!draggedItem || draggedItem === targetId) {
+      setDraggedItem(null);
+      return;
+    }
+
+    const draggedIndex = installations.findIndex(inst => inst.id === draggedItem);
+    const targetIndex = installations.findIndex(inst => inst.id === targetId);
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedItem(null);
+      return;
+    }
+
+    // Optimistic update
+    const newInstallations = [...installations];
+    const [draggedItemData] = newInstallations.splice(draggedIndex, 1);
+    newInstallations.splice(targetIndex, 0, draggedItemData);
+
+    // Update order numbers
+    const updatedInstallations = newInstallations.map((inst, index) => ({
+      ...inst,
+      orden: index + 1
+    }));
+
+    setInstallations(updatedInstallations);
+    setDraggedItem(null);
+
+    // Save new order to database
+    try {
+      // Update orden field for all items
+      const updatePromises = updatedInstallations.map((inst, index) =>
+        supabase
+          .from('instalaciones')
+          .update({ orden: index + 1 })
+          .eq('id', inst.id)
+      );
+
+      const results = await Promise.all(updatePromises);
+      const errors = results.filter(r => r.error);
+      
+      if (errors.length > 0) {
+        console.error('Errors updating order:', errors);
+        throw new Error('Error al actualizar el orden en la base de datos');
+      }
+      
+      showAlert('success', 'Orden Actualizado', 'El orden de las fotos ha sido actualizado correctamente.');
+    } catch (error) {
+      console.error('Error updating order:', error);
+      fetchInstallations(); // Revert on error
+      showAlert('error', 'Error', 'No se pudo actualizar el orden. Intenta nuevamente.');
+    }
+  };
 
   const confirmDeleteInstallation = (id: number, imgUrl: string) => {
     setConfirmConfig({
@@ -128,10 +339,22 @@ export default function InstallationsAdmin() {
       const publicUrls = await Promise.all(uploadPromises);
 
       // Insert all records in a single batch
-      const records = publicUrls.map(url => ({
-        img_insta: url,
-        created_at: new Date().toISOString()
-      }));
+      const currentMaxOrder = installations.length > 0 
+        ? Math.max(...installations.map(inst => inst.orden || 0), 0)
+        : 0;
+      
+      // Try to include orden, but it will be ignored if field doesn't exist
+      const records = publicUrls.map((url, index) => {
+        const record: any = {
+          img_insta: url,
+          created_at: new Date().toISOString()
+        };
+        // Only add orden if we have installations (meaning field might exist)
+        if (installations.length > 0) {
+          record.orden = currentMaxOrder + index + 1;
+        }
+        return record;
+      });
 
       const { error: dbError } = await supabase
         .from('instalaciones')
@@ -143,7 +366,8 @@ export default function InstallationsAdmin() {
       const newInstallations: Installation[] = records.map((record, index) => ({
         id: Date.now() + index, // Temporary ID, will be updated on next fetch
         img_insta: record.img_insta,
-        created_at: record.created_at
+        created_at: record.created_at,
+        orden: record.orden
       }));
 
       setInstallations(prev => [...newInstallations, ...prev]);
@@ -244,31 +468,97 @@ export default function InstallationsAdmin() {
             {installations.map((installation) => (
               <div
                 key={installation.id}
-                className="group relative aspect-square rounded-xl overflow-hidden border border-gray-200 hover:border-[#00A76F] transition-all shadow-sm hover:shadow-lg"
+                draggable
+                onDragStart={(e) => handleDragStart(e, installation.id)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, installation.id)}
+                className={`group relative flex flex-col rounded-xl overflow-hidden border border-gray-200 hover:border-[#00A76F] transition-all shadow-sm hover:shadow-lg cursor-move ${
+                  draggedItem === installation.id ? 'opacity-50 scale-95' : ''
+                }`}
               >
-                {installation.img_insta ? (
-                  <>
-                    <OptimizedImage
-                      src={installation.img_insta}
-                      alt={`Instalación ${installation.id}`}
-                      className="w-full h-full"
-                      imageClassName="object-cover w-full h-full"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <button
-                        onClick={() => confirmDeleteInstallation(installation.id, installation.img_insta!)}
-                        className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                        title="Eliminar foto"
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                    <ImageIcon size={32} className="text-gray-400" />
+                {/* Image Name - Editable */}
+                {installation.img_insta && (
+                  <div className="bg-gray-50 px-3 py-2 border-b border-gray-200 flex items-center gap-2">
+                    {editingNameId === installation.id ? (
+                      <div className="flex-1 flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={editingNameValue}
+                          onChange={(e) => setEditingNameValue(e.target.value)}
+                          onBlur={() => handleSaveName(installation.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              handleSaveName(installation.id);
+                            } else if (e.key === 'Escape') {
+                              handleCancelEditName();
+                            }
+                          }}
+                          className="flex-1 text-xs font-bold text-gray-700 bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-[#00A76F]"
+                          autoFocus
+                        />
+                        <button
+                          onClick={() => handleSaveName(installation.id)}
+                          className="text-[#00A76F] hover:text-[#009462] transition-colors"
+                          title="Guardar"
+                        >
+                          <Check size={14} />
+                        </button>
+                        <button
+                          onClick={handleCancelEditName}
+                          className="text-gray-400 hover:text-red-500 transition-colors"
+                          title="Cancelar"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <GripVertical size={14} className="text-gray-400 shrink-0" />
+                        <p 
+                          className="flex-1 text-xs font-bold text-gray-700 truncate cursor-text"
+                          onClick={() => handleStartEditName(installation.id, getDisplayName(installation))}
+                          title="Haz clic para editar"
+                        >
+                          {getDisplayName(installation)}
+                        </p>
+                        <button
+                          onClick={() => handleStartEditName(installation.id, getDisplayName(installation))}
+                          className="text-gray-400 hover:text-[#00A76F] transition-colors shrink-0 opacity-0 group-hover:opacity-100"
+                          title="Editar nombre"
+                        >
+                          <Edit2 size={12} />
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
+                
+                {/* Image Container */}
+                <div className="relative aspect-square">
+                  {installation.img_insta ? (
+                    <>
+                      <OptimizedImage
+                        src={installation.img_insta}
+                        alt={`Instalación ${installation.id}`}
+                        className="w-full h-full"
+                        imageClassName="object-cover w-full h-full"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <button
+                          onClick={() => confirmDeleteInstallation(installation.id, installation.img_insta!)}
+                          className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                          title="Eliminar foto"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                      <ImageIcon size={32} className="text-gray-400" />
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>

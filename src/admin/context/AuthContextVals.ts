@@ -2,6 +2,8 @@ import { createContext } from 'react';
 
 export interface User {
   username: string;
+  name?: string;
+  email?: string;
   role: 'admin';
 }
 
