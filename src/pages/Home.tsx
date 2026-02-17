@@ -88,53 +88,53 @@ export default function Home() {
 
         {/* Floating Main Card - Centered */}
         <div className="relative z-20 w-full max-w-[1200px] h-full flex items-center justify-center p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6">
-          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl flex flex-col lg:flex-row overflow-hidden w-full border border-white/50 relative" style={{ maxHeight: 'calc(100vh - 120px)', minHeight: 'min(500px, calc(100vh - 120px))' }}>
+          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] shadow-2xl flex flex-col lg:flex-row overflow-hidden w-full border border-white/50 relative" style={{ maxHeight: 'calc(100vh - 120px)' }}>
              
              {/* Text Content (Left Side of Card / Top on Mobile) */}
-             <div className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8 xl:p-12 flex flex-col justify-center gap-3 sm:gap-3.5 md:gap-4 lg:gap-5 xl:gap-6 overflow-y-auto min-h-0">
-                <div>
-                  <span className="inline-block px-3 py-1 sm:px-3.5 sm:py-1.5 md:px-4 md:py-1.5 lg:px-4 lg:py-1.5 bg-blue-50 text-primary text-[9px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest rounded-full w-max border border-blue-100 mb-2.5 sm:mb-3 md:mb-3.5 lg:mb-4">
+             <div className="flex-1 p-3 sm:p-4 md:p-5 lg:p-6 xl:p-8 flex flex-col justify-center gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-3 xl:gap-3.5 min-h-0">
+                <div className="flex-shrink-0">
+                  <span className="inline-block px-2 py-0.5 sm:px-2.5 sm:py-0.5 md:px-3 md:py-1 lg:px-3.5 lg:py-1 bg-blue-50 text-primary text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs font-black uppercase tracking-widest rounded-full w-max border border-blue-100 mb-1 sm:mb-1.5 md:mb-2 lg:mb-2.5">
                     DONDE TODO COMIENZA
                   </span>
-                  <h1 className="text-[#111118] text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-black leading-[1.1] tracking-tight">
+                  <h1 className="text-[#111118] text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-black leading-[1.1] tracking-tight">
                     Sus Primeros Pasos hacia un <br className="hidden md:block" />
                     <span className="text-primary">Futuro Brillante</span>
                   </h1>
                 </div>
                 
-                <p className="text-[#5f5f8c] text-xs sm:text-sm md:text-base lg:text-lg xl:text-lg leading-relaxed font-medium max-w-xl">
+                <p className="text-[#5f5f8c] text-[10px] sm:text-[11px] md:text-xs lg:text-sm xl:text-base leading-relaxed font-medium max-w-xl flex-shrink-0">
                   Ofrecemos un ambiente seguro y acogedor, donde apoyamos el desarrollo integral de los niños y niñas en sus primeros años.
                 </p>
                 
 
-                <div className="pt-0">
-                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-serif italic text-primary tracking-wide">
+                <div className="pt-0 flex-shrink-0">
+                  <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-serif italic text-primary tracking-wide">
                     "Donde su niño es lo más importante"
                   </p>
                 </div>
 
                 {/* Certifications Logos */}
-                <div className="flex items-center justify-center gap-2.5 sm:gap-3 md:gap-3.5 lg:gap-4 xl:gap-5 mt-2.5 sm:mt-3 md:mt-3.5 lg:mt-4 pt-3.5 sm:pt-4 md:pt-4.5 lg:pt-5 xl:pt-5 border-t border-gray-100 px-2 sm:px-3 md:px-4">
+                <div className="flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 lg:gap-2.5 xl:gap-3 mt-1 sm:mt-1.5 md:mt-2 lg:mt-2.5 pt-2 sm:pt-2.5 md:pt-3 lg:pt-3.5 xl:pt-4 border-t border-gray-100 px-1 sm:px-1.5 md:px-2 flex-shrink-0">
                   <img 
                     src="/ministerio.png" 
                     alt="Ministerio de Educación" 
-                    className="h-7 sm:h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
+                    className="h-5 sm:h-6 md:h-7 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
                   />
                   <img 
                     src="/certificado_1.png" 
                     alt="Certificación 1" 
-                    className="h-7 sm:h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
+                    className="h-5 sm:h-6 md:h-7 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
                   />
                   <img 
                     src="/certificado_2.png" 
                     alt="Certificación 2" 
-                    className="h-7 sm:h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
+                    className="h-5 sm:h-6 md:h-7 lg:h-8 xl:h-10 2xl:h-12 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
                   />
                 </div>
              </div>
 
              {/* Image Content (Right Side of Card / Bottom on Mobile) */}
-             <div className="w-full lg:w-[45%] h-[220px] sm:h-[280px] md:h-[320px] lg:h-auto relative flex-shrink-0">
+             <div className="w-full lg:w-[45%] h-[150px] sm:h-[180px] md:h-[220px] lg:h-auto relative flex-shrink-0">
                 <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/img_portada_3.png")' }}></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
              </div>
