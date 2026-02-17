@@ -83,24 +83,27 @@ export default function EducationalProjectSection() {
 
         {/* Main Top Card */}
         <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 lg:p-8 mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
             
             {/* Left Column: Philosophy */}
-            <div className="flex flex-col gap-3 text-center lg:text-left">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center text-purple-400 mb-1">
+                <span className="material-symbols-outlined text-2xl">lightbulb</span>
+              </div>
               <h3 className="text-xl font-bold text-[#111118]">Nuestra Filosofía</h3>
-              <p className="text-[#5f5f8c] text-sm lg:text-base font-medium leading-relaxed">
+              <p className="text-[#5f5f8c] text-sm lg:text-base font-medium leading-relaxed text-justify">
                 Somos una guardería bilingüe dedicada a potenciar lo mejor de los más pequeños.
                 Ofrecemos un ambiente seguro y estimulante, centrado en el desarrollo integral y felicidad.
               </p>
             </div>
 
-            {/* Middle Column: Team */}
-            <div className="flex flex-col items-center gap-2 text-center border-t lg:border-t-0 lg:border-l lg:border-r border-gray-100 py-6 lg:py-0">
+            {/* Middle Column: Installations */}
+            <div className="flex flex-col items-center gap-3 text-center border-t lg:border-t-0 lg:border-l lg:border-r border-gray-100 py-6 lg:py-0">
               <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-blue-400 mb-1">
                 <span className="material-symbols-outlined text-2xl">domain</span>
               </div>
-              <h3 className="text-lg font-bold text-[#111118]">Nuestras Instalaciones</h3>
-              <div className="text-[#5f5f8c] text-sm font-medium">
+              <h3 className="text-xl font-bold text-[#111118]">Nuestras Instalaciones</h3>
+              <div className="text-[#5f5f8c] text-sm font-medium text-justify">
                 <p>Aulas Equipadas y Seguras</p>
                 <p>Áreas de Juego al Aire Libre</p>
               </div>
@@ -116,7 +119,16 @@ export default function EducationalProjectSection() {
               </button>
             </div>
 
-            
+            {/* Right Column: Team */}
+            <div className="flex flex-col items-center gap-3 text-center border-t lg:border-t-0 border-gray-100 py-6 lg:py-0">
+              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-green-400 mb-1">
+                <span className="material-symbols-outlined text-2xl">groups</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#111118]">Nuestro Equipo</h3>
+              <p className="text-[#5f5f8c] text-sm lg:text-base font-medium leading-relaxed text-justify">
+              Contamos con docentes certificados en educación inicial bilingüe, capacitados en metodologías modernas y con vocación por el cuidado infantil.
+              </p>
+            </div>
 
           </div>
         </div>
