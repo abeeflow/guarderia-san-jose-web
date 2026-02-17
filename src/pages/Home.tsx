@@ -115,11 +115,16 @@ export default function Home() {
 
                 {/* Certifications Logos */}
                 <div className="flex items-center justify-center gap-2 sm:gap-2.5 md:gap-3 lg:gap-4 xl:gap-5 mt-2 sm:mt-2.5 md:mt-3 lg:mt-3.5 pt-3 sm:pt-3.5 md:pt-4 lg:pt-4.5 xl:pt-5 border-t border-gray-100 px-2 sm:px-3 md:px-4 flex-shrink-0">
-                  <img 
-                    src="/ministerio.png" 
-                    alt="Ministerio de Educación" 
-                    className="h-7 sm:h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
-                  />
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-3">
+                    <span className="inline-flex items-center px-2 sm:px-2.5 md:px-3 lg:px-3.5 py-1 sm:py-1 md:py-1.5 lg:py-2 bg-gradient-to-r from-blue-50 to-blue-100/80 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs xl:text-sm font-bold text-primary border border-primary/20 rounded-lg shadow-sm whitespace-nowrap">
+                      R.D.N. 000092
+                    </span>
+                    <img 
+                      src="/ministerio.png" 
+                      alt="Ministerio de Educación" 
+                      className="h-7 sm:h-8 md:h-10 lg:h-12 xl:h-14 2xl:h-16 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity flex-shrink-0"
+                    />
+                  </div>
                   <img 
                     src="/certificado_1.png" 
                     alt="Certificación 1" 
