@@ -69,14 +69,14 @@ export default function EducationalProjectSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <section className="min-h-screen w-full flex flex-col bg-[#f5f5f8] pt-[80px] overflow-hidden scroll-mt-0" id="educational-project">
+    <section className="min-h-screen min-h-[100vh] w-full flex flex-col bg-[#f5f5f8] pt-[80px] overflow-hidden scroll-mt-0" id="educational-project">
       <div className="flex-1 w-full overflow-visible">
-        <div className="min-h-full flex flex-col justify-center items-center py-8 lg:py-12">
+        <div className="min-h-full flex flex-col justify-center items-center py-4 sm:py-6 md:py-8 lg:py-10 xl:py-12">
           <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-10">
         
         {/* Main Title */}
-        <div className="text-center mb-6">
-          <h2 className="text-[#111118] text-3xl lg:text-4xl font-extrabold tracking-tight">
+        <div className="text-center mb-4 sm:mb-5 md:mb-6">
+          <h2 className="text-[#111118] text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
             Conócenos
           </h2>
         </div>

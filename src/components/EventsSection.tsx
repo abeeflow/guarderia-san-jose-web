@@ -141,12 +141,12 @@ export default function EventsSection() {
   const visibleEvents = events.slice(currentSlideIndex * 3, (currentSlideIndex + 1) * 3);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Cargando eventos...</div>;
+    return <div className="min-h-screen min-h-[100vh] flex items-center justify-center">Cargando eventos...</div>;
   }
 
   return (
     <>
-      <section className="min-h-screen flex flex-col justify-center py-20 bg-white scroll-mt-[81px]" id="events">
+      <section className="min-h-screen min-h-[100vh] flex flex-col justify-center py-8 sm:py-12 md:py-16 lg:py-20 bg-white scroll-mt-[81px]" id="events">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div className="flex flex-col gap-2">

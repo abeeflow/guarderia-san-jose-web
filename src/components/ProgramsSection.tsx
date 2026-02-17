@@ -45,20 +45,20 @@ const programs = [
 
 export default function ProgramsSection() {
   return (
-    <section className="min-h-screen w-full flex flex-col bg-white pt-[80px] overflow-hidden scroll-mt-0" id="programs">
+    <section className="min-h-screen min-h-[100vh] w-full flex flex-col bg-white pt-[80px] overflow-hidden scroll-mt-0" id="programs">
       <div className="flex-1 w-full overflow-visible">
-        <div className="min-h-full flex flex-col justify-center items-center py-8 lg:py-12">
+        <div className="min-h-full flex flex-col justify-center items-center py-4 sm:py-6 md:py-8 lg:py-10 xl:py-12">
           <div className="max-w-[1280px] w-full mx-auto px-6 lg:px-10">
         {/* Header de la sección */}
-        <div className="flex flex-col items-center text-center gap-6 mb-12">
+        <div className="flex flex-col items-center text-center gap-3 sm:gap-4 md:gap-5 lg:gap-6 mb-6 sm:mb-8 md:mb-10 lg:mb-12">
           <div className="relative">
-            <h2 className="text-[#111118] text-3xl lg:text-5xl font-extrabold tracking-tight">
+            <h2 className="text-[#111118] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
               Nuestros Programas Educativos
             </h2>
-            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-1/2 h-1 bg-blue-700 rounded-full"></div>
+            <div className="absolute -bottom-2 sm:-bottom-3 md:-bottom-4 left-1/2 transform -translate-x-1/2 w-1/2 h-1 bg-blue-700 rounded-full"></div>
           </div>
           
-          <p className="text-[#5f5f8c] text-lg leading-relaxed max-w-4xl mt-4 text-justify md:text-center">
+          <p className="text-[#5f5f8c] text-sm sm:text-base md:text-lg leading-relaxed max-w-4xl mt-2 sm:mt-3 md:mt-4 text-justify md:text-center">
             Nuestros programas educativos están diseñados para acompañar el desarrollo integral de los niños 
             desde sus primeros meses de vida. Brindamos Educación Temprana, Cuna, Jardín y Guardería, en un 
             entorno seguro, donde se promueven el aprendizaje, el juego, la autonomía y los valores, respetando 
@@ -67,7 +67,7 @@ export default function ProgramsSection() {
         </div>
 
         {/* Grid de Programas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
           {programs.map((program) => (
             <div key={program.id} className="flex flex-col gap-4 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 group">
               
