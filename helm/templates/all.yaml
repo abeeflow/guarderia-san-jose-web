@@ -1,0 +1,5 @@
+{{- include "base.deployment" . }}
+---
+{{- include "base.service" . }}
+---
+{{- include "base.ingress" . }}

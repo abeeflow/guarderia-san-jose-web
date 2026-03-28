@@ -1,0 +1,25 @@
+base:
+  deployment:
+    replicas: "1"
+    port: "80"
+    image: "ghcr.io/abeeflow/guarderia-san-jose-web"
+    tag: "latest"
+    #
+    requests_memory: "32Mi"
+    requests_cpu: "25m"
+    #
+    limits_memory: "128Mi"
+    limits_cpu: "100m"
+  #
+  hpa:
+    enabled: false
+  #
+  ingress:
+    url: guarderiajardinsanjose.com
+    clusterIssuer: letsencrypt-prod
+  #
+  database:
+    enabled: false
+  #
+  redis:
+    enabled: false
