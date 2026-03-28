@@ -51,19 +51,18 @@ export default function InstallationsAdmin() {
       // If error about missing columns, try without them
       if (error && (error.message?.includes('nombre_imagen') || error.message?.includes('orden') || error.message?.includes('does not exist'))) {
         // Try with orden only (without nombre_imagen)
-        let result: any = await supabase
+        let result = await supabase
           .from('instalaciones')
           .select('id, img_insta, created_at, orden')
           .order('created_at', { ascending: false });
-        
+
         if (result.error && (result.error.message?.includes('orden') || result.error.message?.includes('does not exist'))) {
-          // orden doesn't exist, use basic fields only
           result = await supabase
             .from('instalaciones')
             .select('id, img_insta, created_at')
             .order('created_at', { ascending: false });
         }
-        
+
         data = result.data;
         error = result.error;
       }
@@ -73,7 +72,7 @@ export default function InstallationsAdmin() {
       }
       
       // Normalize data: ensure all fields exist (set to null if missing)
-      const installationsData: Installation[] = (data || []).map((inst: any) => ({
+      const installationsData: Installation[] = (data || []).map((inst: Record<string, unknown>) => ({
         id: inst.id,
         img_insta: inst.img_insta,
         created_at: inst.created_at,
@@ -131,7 +130,7 @@ export default function InstallationsAdmin() {
       
       // Convert to uppercase
       return cleanedName.toUpperCase();
-    } catch (error) {
+    } catch {
       return 'IMAGEN';
     }
   };
@@ -288,7 +287,7 @@ export default function InstallationsAdmin() {
       const bucketIndex = urlParts.findIndex(part => part === 'fotos-local');
       
       // Delete operations in parallel
-      const deletePromises: Promise<any>[] = [];
+      const deletePromises: Promise<unknown>[] = [];
 
       if (bucketIndex !== -1 && bucketIndex < urlParts.length - 1) {
         const filePath = urlParts.slice(bucketIndex + 1).join('/');
@@ -345,7 +344,7 @@ export default function InstallationsAdmin() {
       
       // Try to include orden, but it will be ignored if field doesn't exist
       const records = publicUrls.map((url, index) => {
-        const record: any = {
+        const record: Record<string, unknown> = {
           img_insta: url,
           created_at: new Date().toISOString()
         };

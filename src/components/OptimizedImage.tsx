@@ -17,19 +17,27 @@ export const OptimizedImage = ({
   imageClassName = "object-cover", 
   priority = false 
 }: OptimizedImageProps) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const [prevSrc, setPrevSrc] = useState(src);
+
+  // Check if image is already cached in the browser
+  const isImageCached = (url: string): boolean => {
+    const img = new Image();
+    img.src = url;
+    return img.complete && img.naturalWidth > 0;
+  };
+
+  const [isLoaded, setIsLoaded] = useState(() => isImageCached(src));
+  const [hasError, setHasError] = useState(false);
 
   if (src !== prevSrc) {
     setPrevSrc(src);
-    setIsLoaded(false);
+    const cached = isImageCached(src);
+    setIsLoaded(cached);
     setHasError(false);
   }
 
   useEffect(() => {
-    // Preload image if priority is true
-    if (priority) {
+    if (priority && !isImageCached(src)) {
       const img = new Image();
       img.src = src;
       img.onload = () => setIsLoaded(true);
@@ -58,7 +66,7 @@ export const OptimizedImage = ({
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full ${imageClassName} transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full h-full ${imageClassName} transition-opacity duration-150 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
         loading={priority ? "eager" : "lazy"}

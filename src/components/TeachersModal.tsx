@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { OptimizedImage } from './OptimizedImage';
 
 interface Installation {
@@ -15,40 +14,55 @@ interface Installation {
 interface TeachersModalProps {
   isOpen: boolean;
   onClose: () => void;
+  prefetchedInstallations?: Installation[];
+  isPrefetchLoading?: boolean;
 }
 
-export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
-  const [installations, setInstallations] = useState<Installation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function TeachersModal({ isOpen, onClose, prefetchedInstallations, isPrefetchLoading }: TeachersModalProps) {
+  const installations = useMemo(() => prefetchedInstallations || [], [prefetchedInstallations]);
+  const isLoading = isPrefetchLoading ?? false;
   const [currentPage, setCurrentPage] = useState(0);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const itemsPerPage = 1;
 
+  // Reset to first page when modal opens
+  if (isOpen && !prevIsOpen) {
+    setCurrentPage(0);
+  }
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+  }
+
+  // Prefetch adjacent images (prev and next) for instant carousel navigation
   useEffect(() => {
-    if (isOpen) {
-      fetchInstallations();
-    }
-  }, [isOpen]);
+    if (!isOpen || installations.length <= 1) return;
+
+    const totalPages = Math.ceil(installations.length / itemsPerPage);
+    const prevIdx = (currentPage - 1 + totalPages) % totalPages;
+    const nextIdx = (currentPage + 1) % totalPages;
+
+    [prevIdx, nextIdx].forEach(idx => {
+      const inst = installations[idx * itemsPerPage];
+      if (inst?.img_insta) {
+        const img = new Image();
+        img.src = inst.img_insta;
+      }
+    });
+  }, [currentPage, installations, isOpen]);
 
   // Function to format image name from URL
   const formatImageName = (url: string): string => {
     try {
-      // Extract filename from URL
       const urlParts = url.split('/');
       const fileName = urlParts[urlParts.length - 1];
-      
-      // Remove extension
       const nameWithoutExt = fileName.split('.').slice(0, -1).join('.');
-      
-      // Remove special characters (_, -, etc.) and replace with spaces
       const cleanedName = nameWithoutExt
         .replace(/[_-]/g, ' ')
         .replace(/[^\w\s]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-      
-      // Convert to uppercase
       return cleanedName.toUpperCase();
-    } catch (error) {
+    } catch {
       return 'IMAGEN';
     }
   };
@@ -62,72 +76,6 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
       return formatImageName(installation.img_insta);
     }
     return 'IMAGEN';
-  };
-
-  const fetchInstallations = async () => {
-    try {
-      setIsLoading(true);
-      // Try to fetch with orden and nombre_imagen fields
-      let { data, error } = await supabase
-        .from('instalaciones')
-        .select('id, img_insta, created_at, nombre_imagen, orden')
-        .order('created_at', { ascending: false });
-
-      // If error about missing columns, try without them
-      if (error && (error.message?.includes('nombre_imagen') || error.message?.includes('orden') || error.message?.includes('does not exist'))) {
-        // Try with orden only
-        let result: any = await supabase
-          .from('instalaciones')
-          .select('id, img_insta, created_at, orden')
-          .order('created_at', { ascending: false });
-        
-        if (result.error && (result.error.message?.includes('orden') || result.error.message?.includes('does not exist'))) {
-          // orden doesn't exist, use basic fields only
-          result = await supabase
-            .from('instalaciones')
-            .select('id, img_insta, created_at')
-            .order('created_at', { ascending: false });
-        }
-        
-        data = result.data;
-        error = result.error;
-      }
-
-      if (error) throw error;
-
-      // Normalize data: ensure all fields exist (set to null if missing)
-      const installationsData: Installation[] = ((data || []).filter(inst => inst.img_insta !== null)).map((inst: any) => ({
-        id: inst.id,
-        img_insta: inst.img_insta,
-        created_at: inst.created_at,
-        nombre_imagen: inst.nombre_imagen ?? null,
-        orden: inst.orden ?? null
-      }));
-      
-      // Sort: items with orden first (ascending), then items without orden by created_at
-      installationsData.sort((a, b) => {
-        // Both have orden
-        if (a.orden !== null && a.orden !== undefined && b.orden !== null && b.orden !== undefined) {
-          return a.orden - b.orden;
-        }
-        // Only a has orden
-        if (a.orden !== null && a.orden !== undefined && (b.orden === null || b.orden === undefined)) {
-          return -1;
-        }
-        // Only b has orden
-        if ((a.orden === null || a.orden === undefined) && b.orden !== null && b.orden !== undefined) {
-          return 1;
-        }
-        // Both are null, sort by created_at
-        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
-      });
-
-      setInstallations(installationsData);
-    } catch (error) {
-      console.error('Error fetching installations:', error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const totalPages = Math.ceil(installations.length / itemsPerPage);
@@ -150,16 +98,16 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-[#0F172A]/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Content */}
       <div className="relative w-full max-w-5xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-300">
-        
+
         {/* Close Button */}
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-6 right-6 z-10 p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-500 transition-colors"
         >
@@ -167,10 +115,10 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
         </button>
 
         <div className="p-6 md:p-8 flex-1 overflow-hidden">
-          
+
           {/* Header */}
           <div className="text-center mb-6">
-            
+
             <h2 className="text-3xl md:text-4xl font-black text-[#1E1B4B]">
               Nuestras Instalaciones
             </h2>
@@ -198,6 +146,7 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
                       alt={getDisplayName(currentInstallations[0])}
                       className="w-full h-full"
                       imageClassName="object-cover w-full h-full"
+                      priority
                     />
                   </div>
                   {/* Image Name */}
@@ -227,14 +176,14 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
             >
               <ChevronLeft size={24} />
             </button>
-            
+
             <div className="flex gap-2">
               {Array.from({ length: totalPages }).map((_, idx) => (
-                  <div 
-                    key={idx} 
+                  <div
+                    key={idx}
                     className={`w-2 h-2 rounded-full transition-colors ${
                       idx === currentPage ? 'bg-blue-500' : 'bg-gray-300'
-                    } ${installations.length <= itemsPerPage ? 'opacity-0' : 'opacity-100'}`} 
+                    } ${installations.length <= itemsPerPage ? 'opacity-0' : 'opacity-100'}`}
                   />
               ))}
             </div>
@@ -251,7 +200,7 @@ export default function TeachersModal({ isOpen, onClose }: TeachersModalProps) {
               <ChevronRight size={24} />
             </button>
           </div>
-          
+
           {/* Quote moved inside footer */}
           <div className="text-center mt-2">
               <p className="text-[10px] text-gray-400 italic">"Donde su niño es lo más importante"</p>

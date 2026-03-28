@@ -1,5 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TeachersModal from './TeachersModal';
+import { supabase } from '../lib/supabase';
+
+interface Installation {
+  id: number;
+  img_insta: string | null;
+  created_at?: string;
+  nombre_imagen?: string | null;
+  orden?: number | null;
+}
 
 const projectItems = [
   {
@@ -67,6 +76,67 @@ const projectItems = [
 
 export default function EducationalProjectSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [installations, setInstallations] = useState<Installation[]>([]);
+  const [isLoadingInstallations, setIsLoadingInstallations] = useState(true);
+
+  // Prefetch installations data on component mount (before user clicks "Ver")
+  useEffect(() => {
+    const fetchInstallations = async () => {
+      try {
+        let { data, error } = await supabase
+          .from('instalaciones')
+          .select('id, img_insta, created_at, nombre_imagen, orden')
+          .order('created_at', { ascending: false });
+
+        if (error && (error.message?.includes('nombre_imagen') || error.message?.includes('orden') || error.message?.includes('does not exist'))) {
+          let result = await supabase
+            .from('instalaciones')
+            .select('id, img_insta, created_at, orden')
+            .order('created_at', { ascending: false });
+
+          if (result.error && (result.error.message?.includes('orden') || result.error.message?.includes('does not exist'))) {
+            result = await supabase
+              .from('instalaciones')
+              .select('id, img_insta, created_at')
+              .order('created_at', { ascending: false });
+          }
+          data = result.data;
+          error = result.error;
+        }
+
+        if (error) throw error;
+
+        const installationsData: Installation[] = ((data || []).filter(inst => inst.img_insta !== null)).map((inst: Record<string, unknown>) => ({
+          id: inst.id,
+          img_insta: inst.img_insta,
+          created_at: inst.created_at,
+          nombre_imagen: inst.nombre_imagen ?? null,
+          orden: inst.orden ?? null
+        }));
+
+        installationsData.sort((a, b) => {
+          if (a.orden !== null && a.orden !== undefined && b.orden !== null && b.orden !== undefined) return a.orden - b.orden;
+          if (a.orden !== null && a.orden !== undefined) return -1;
+          if (b.orden !== null && b.orden !== undefined) return 1;
+          return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+        });
+
+        setInstallations(installationsData);
+
+        // Preload the first image so it's in browser cache when modal opens
+        if (installationsData.length > 0 && installationsData[0].img_insta) {
+          const img = new Image();
+          img.src = installationsData[0].img_insta;
+        }
+      } catch (error) {
+        console.error('Error prefetching installations:', error);
+      } finally {
+        setIsLoadingInstallations(false);
+      }
+    };
+
+    fetchInstallations();
+  }, []);
 
   return (
     <section className="min-h-screen min-h-[100vh] w-full flex flex-col bg-[#f5f5f8] pt-[80px] overflow-hidden scroll-mt-0" id="educational-project">
@@ -190,9 +260,11 @@ export default function EducationalProjectSection() {
         </div>
       </div>
       
-      <TeachersModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <TeachersModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        prefetchedInstallations={installations}
+        isPrefetchLoading={isLoadingInstallations}
       />
     </section>
   );

@@ -20,6 +20,12 @@ interface DisplayEvent extends DBEvent {
   formattedDate: string;
 }
 
+// Preload a single image into browser cache
+const preloadImage = (src: string) => {
+  const img = new Image();
+  img.src = src;
+};
+
 export default function EventsSection() {
   const [events, setEvents] = useState<DisplayEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,17 +56,16 @@ export default function EventsSection() {
             } else if (Array.isArray(event.img_album)) {
               albumImages = event.img_album;
             }
-            
+
             const gallery = [
-              event.img_portada || '', 
+              event.img_portada || '',
               ...albumImages
             ].filter(Boolean);
 
             // Process Date
             const dateObj = new Date(event.fecha_even);
-            // Spanish months for the badge
             const months = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-            
+
             return {
               ...event,
               gallery,
@@ -75,6 +80,13 @@ export default function EventsSection() {
             };
           });
           setEvents(processedEvents);
+
+          // Preload all cover images immediately
+          processedEvents.forEach((event) => {
+            if (event.img_portada) {
+              preloadImage(event.img_portada);
+            }
+          });
         }
       } catch (error) {
         console.error('Error loading events:', error);
@@ -89,8 +101,10 @@ export default function EventsSection() {
   const openModal = (event: DisplayEvent) => {
     setSelectedEvent(event);
     setCurrentImageIndex(0);
-    // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
+
+    // Preload ALL gallery images for this event
+    event.gallery.forEach((src) => preloadImage(src));
   };
 
   const closeModal = () => {
@@ -112,28 +126,36 @@ export default function EventsSection() {
     }
   };
 
+  const totalSlides = Math.ceil(events.length / 3);
+
   const nextSlide = () => {
-    setCurrentSlideIndex((prev) => (prev + 1) % Math.ceil(events.length / 3));
+    const nextIdx = (currentSlideIndex + 1) % totalSlides;
+    setCurrentSlideIndex(nextIdx);
+
+    // Preload cover images of the next slide after this one
+    const followingIdx = (nextIdx + 1) % totalSlides;
+    events.slice(followingIdx * 3, (followingIdx + 1) * 3).forEach((event) => {
+      if (event.img_portada) preloadImage(event.img_portada);
+    });
   };
 
   const prevSlide = () => {
-    setCurrentSlideIndex((prev) => (prev - 1 + Math.ceil(events.length / 3)) % Math.ceil(events.length / 3));
+    const prevIdx = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+    setCurrentSlideIndex(prevIdx);
+
+    // Preload cover images of the previous slide before this one
+    const precedingIdx = (prevIdx - 1 + totalSlides) % totalSlides;
+    events.slice(precedingIdx * 3, (precedingIdx + 1) * 3).forEach((event) => {
+      if (event.img_portada) preloadImage(event.img_portada);
+    });
   };
 
-  // Preload images for modal navigation
+  // Preload adjacent gallery images during modal navigation
   useEffect(() => {
-    if (selectedEvent && selectedEvent.gallery.length > 0) {
-      const preloadImage = (src: string) => {
-        const img = new Image();
-        img.src = src;
-      };
-
-      // Preload next image
+    if (selectedEvent && selectedEvent.gallery.length > 1) {
       const nextIndex = (currentImageIndex + 1) % selectedEvent.gallery.length;
-      preloadImage(selectedEvent.gallery[nextIndex]);
-      
-      // Preload previous image
       const prevIndex = (currentImageIndex - 1 + selectedEvent.gallery.length) % selectedEvent.gallery.length;
+      preloadImage(selectedEvent.gallery[nextIndex]);
       preloadImage(selectedEvent.gallery[prevIndex]);
     }
   }, [currentImageIndex, selectedEvent]);
@@ -154,11 +176,11 @@ export default function EventsSection() {
               <p className="text-[#5f5f8c]">Revive los momentos más especiales de nuestra comunidad educativa.</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {visibleEvents.map((event) => (
-              <div 
-                key={event.id} 
+              <div
+                key={event.id}
                 className="bg-white rounded-xl overflow-hidden border border-gray-100 group shadow-sm cursor-pointer hover:shadow-lg transition-all animate-fade-in-zoom"
                 onClick={() => openModal(event)}
               >
@@ -167,6 +189,7 @@ export default function EventsSection() {
                     src={event.img_portada || ''}
                     alt={event.titulo}
                     className="w-full h-full"
+                    priority
                   />
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-lg p-2 w-14 text-center z-10 shadow-sm">
                     <p className="text-xs font-black uppercase text-gray-500">{event.month}</p>
@@ -186,14 +209,14 @@ export default function EventsSection() {
 
           {/* Navigation Arrows */}
           <div className="flex items-center justify-center gap-4 mt-12">
-            <button 
+            <button
               onClick={prevSlide}
               className="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-sm"
               disabled={events.length <= 3}
             >
               <ChevronLeft size={24} />
             </button>
-            <button 
+            <button
               onClick={nextSlide}
               className="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white hover:border-primary transition-colors shadow-sm"
               disabled={events.length <= 3}
@@ -207,12 +230,12 @@ export default function EventsSection() {
       {/* Modal */}
       {selectedEvent && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={closeModal}>
-          <div 
+          <div
             className="bg-white rounded-3xl w-full max-w-6xl max-h-[90vh] overflow-y-auto shadow-2xl relative animate-fade-in-zoom"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
-            <button 
+            <button
               onClick={closeModal}
               className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors shadow-sm"
             >
@@ -235,7 +258,7 @@ export default function EventsSection() {
                         alt={`Gallery ${currentImageIndex + 1}`}
                         className="w-full h-full"
                         imageClassName="object-contain"
-                        priority={true}
+                        priority
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -243,11 +266,11 @@ export default function EventsSection() {
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Controls & Indicators */}
                   {selectedEvent.gallery.length > 1 && (
                     <div className="flex items-center justify-center gap-4 mt-2">
-                      <button 
+                      <button
                         onClick={prevImage}
                         className="w-10 h-10 bg-white border border-gray-200 hover:bg-gray-50 rounded-full flex items-center justify-center shadow-sm text-gray-700 hover:text-primary transition-all"
                       >
@@ -256,14 +279,14 @@ export default function EventsSection() {
 
                       <div className="flex justify-center gap-2">
                         {selectedEvent.gallery.map((_, idx) => (
-                          <div 
+                          <div
                             key={idx}
                             className={`h-2 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'bg-primary w-8' : 'bg-gray-300 w-2'}`}
                           />
                         ))}
                       </div>
 
-                      <button 
+                      <button
                         onClick={nextImage}
                         className="w-10 h-10 bg-white border border-gray-200 hover:bg-gray-50 rounded-full flex items-center justify-center shadow-sm text-gray-700 hover:text-primary transition-all"
                       >
