@@ -1,0 +1,51 @@
+base:
+  external_secrets:
+    secret: ""
+
+  deployment:
+    replicas: "1"
+    port: "3000"
+    image: ""
+    tag: "latest"
+    pullPolicy: IfNotPresent
+    requests_memory: "128Mi"
+    requests_cpu: "100m"
+    limits_memory: "512Mi"
+    limits_cpu: "500m"
+    health_path: /health
+
+  hpa:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+
+  ingress:
+    url: ""
+    tls: true
+    clusterIssuer: letsencrypt-prod
+    annotations: {}
+
+  database:
+    enabled: false
+    image: postgres:16-alpine
+    storage: "5Gi"
+    port: "5432"
+    name: app
+    user: app
+    pgbouncer:
+      enabled: false
+      image: edoburu/pgbouncer:latest
+      pool_mode: transaction
+      default_pool_size: 20
+      min_pool_size: 5
+      max_client_conn: 100
+      max_db_connections: 50
+
+  redis:
+    enabled: false
+    image: redis:7-alpine
+    storage: "1Gi"
+
+  imagePullSecrets:
+    - name: ghcr-secret
