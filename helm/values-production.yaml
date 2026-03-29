@@ -1,4 +1,6 @@
 base:
+  external_secrets:
+    secret: ""
   deployment:
     replicas: "1"
     port: "80"
