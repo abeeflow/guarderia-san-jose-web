@@ -25,3 +25,5 @@ base:
   #
   redis:
     enabled: false
+  imagePullSecrets:
+    - name: ghcr-secret
