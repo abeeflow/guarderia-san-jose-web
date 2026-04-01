@@ -1,0 +1,200 @@
+{{- define "base.database" -}}
+{{- if .Values.base.database.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-db-pvc
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.base.database.storage }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-db
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-db
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.base.database.image }}
+          ports:
+            - containerPort: {{ .Values.base.database.port | int }}
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.base.database.name }}
+            - name: POSTGRES_USER
+              value: {{ .Values.base.database.user }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-db-secret
+                  key: db-password
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+              subPath: pgdata
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "{{ .Values.base.database.user }}", "-d", "{{ .Values.base.database.name }}"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "{{ .Values.base.database.user }}", "-d", "{{ .Values.base.database.name }}"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-db
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.base.database.port | int }}
+      targetPort: {{ .Values.base.database.port | int }}
+  selector:
+    app: {{ .Release.Name }}-db
+{{- if .Values.base.database.pgbouncer }}
+{{- if .Values.base.database.pgbouncer.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-pgbouncer
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-pgbouncer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-pgbouncer
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-pgbouncer
+    spec:
+      containers:
+        - name: pgbouncer
+          image: {{ .Values.base.database.pgbouncer.image | default "edoburu/pgbouncer:latest" }}
+          ports:
+            - containerPort: 5432
+          env:
+            - name: DATABASE_URL
+              value: "postgres://{{ .Values.base.database.user }}@{{ .Release.Name }}-db:{{ .Values.base.database.port }}/{{ .Values.base.database.name }}"
+            - name: AUTH_TYPE
+              value: md5
+            - name: AUTH_FILE
+              value: /etc/pgbouncer/userlist.txt
+            - name: POOL_MODE
+              value: {{ .Values.base.database.pgbouncer.pool_mode | default "transaction" }}
+            - name: DEFAULT_POOL_SIZE
+              value: "{{ .Values.base.database.pgbouncer.default_pool_size | default 20 }}"
+            - name: MAX_CLIENT_CONN
+              value: "{{ .Values.base.database.pgbouncer.max_client_conn | default 100 }}"
+            - name: MAX_DB_CONNECTIONS
+              value: "{{ .Values.base.database.pgbouncer.max_db_connections | default 50 }}"
+          volumeMounts:
+            - name: userlist
+              mountPath: /etc/pgbouncer/userlist.txt
+              subPath: userlist.txt
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      initContainers:
+        - name: generate-userlist
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              PASSWORD=$(cat /etc/pgbouncer-secret/db-password)
+              echo "\"{{ .Values.base.database.user }}\" \"md5$(echo -n ${PASSWORD}{{ .Values.base.database.user }} | md5sum | cut -d' ' -f1)\"" > /etc/pgbouncer-userlist/userlist.txt
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "50m"
+              memory: "32Mi"
+          volumeMounts:
+            - name: db-secret
+              mountPath: /etc/pgbouncer-secret
+              readOnly: true
+            - name: userlist
+              mountPath: /etc/pgbouncer-userlist
+      volumes:
+        - name: db-secret
+          secret:
+            secretName: {{ .Release.Name }}-db-secret
+        - name: userlist
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-pgbouncer
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-pgbouncer
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: {{ .Release.Name }}-pgbouncer
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

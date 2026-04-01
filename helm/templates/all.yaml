@@ -1,0 +1,11 @@
+{{- include "base.deployment" . }}
+---
+{{- include "base.service" . }}
+---
+{{- include "base.ingress" . }}
+---
+{{- include "base.hpa" . }}
+---
+{{- include "base.database" . }}
+---
+{{- include "base.redis" . }}
