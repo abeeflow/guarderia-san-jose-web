@@ -115,11 +115,11 @@ export default function EducationalProjectSection() {
         if (error) throw error;
 
         const installationsData: Installation[] = ((data || []).filter(inst => inst.img_insta !== null)).map((inst: Record<string, unknown>) => ({
-          id: inst.id,
-          img_insta: inst.img_insta,
-          created_at: inst.created_at,
-          nombre_imagen: inst.nombre_imagen ?? null,
-          orden: inst.orden ?? null
+          id: Number(inst.id),
+          img_insta: (inst.img_insta as string) ?? null,
+          created_at: (inst.created_at as string) ?? null,
+          nombre_imagen: (inst.nombre_imagen as string) ?? null,
+          orden: (inst.orden as number) ?? null
         }));
 
         installationsData.sort((a, b) => {

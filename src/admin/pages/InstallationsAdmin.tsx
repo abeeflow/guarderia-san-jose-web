@@ -43,28 +43,34 @@ export default function InstallationsAdmin() {
     setIsLoading(true);
     try {
       // Try to fetch with all fields first
-      let { data, error } = await supabase
+      let data: Record<string, unknown>[] | null = null;
+      let error: { message?: string } | null = null;
+
+      const r1 = await supabase
         .from('instalaciones')
         .select('id, img_insta, created_at, nombre_imagen, orden')
         .order('created_at', { ascending: false });
+      data = r1.data as Record<string, unknown>[] | null;
+      error = r1.error;
 
       // If error about missing columns, try without them
       if (error && (error.message?.includes('nombre_imagen') || error.message?.includes('orden') || error.message?.includes('does not exist'))) {
-        // Try with orden only (without nombre_imagen)
-        let result = await supabase
+        const r2 = await supabase
           .from('instalaciones')
           .select('id, img_insta, created_at, orden')
           .order('created_at', { ascending: false });
 
-        if (result.error && (result.error.message?.includes('orden') || result.error.message?.includes('does not exist'))) {
-          result = await supabase
+        if (r2.error && (r2.error.message?.includes('orden') || r2.error.message?.includes('does not exist'))) {
+          const r3 = await supabase
             .from('instalaciones')
             .select('id, img_insta, created_at')
             .order('created_at', { ascending: false });
+          data = r3.data as Record<string, unknown>[] | null;
+          error = r3.error;
+        } else {
+          data = r2.data as Record<string, unknown>[] | null;
+          error = r2.error;
         }
-
-        data = result.data;
-        error = result.error;
       }
 
       if (error) {
@@ -73,11 +79,11 @@ export default function InstallationsAdmin() {
       
       // Normalize data: ensure all fields exist (set to null if missing)
       const installationsData: Installation[] = (data || []).map((inst: Record<string, unknown>) => ({
-        id: inst.id,
-        img_insta: inst.img_insta,
-        created_at: inst.created_at,
-        nombre_imagen: inst.nombre_imagen ?? null,
-        orden: inst.orden ?? null
+        id: Number(inst.id),
+        img_insta: (inst.img_insta as string) ?? null,
+        created_at: (inst.created_at as string) ?? null,
+        nombre_imagen: (inst.nombre_imagen as string) ?? null,
+        orden: (inst.orden as number) ?? null
       }));
       
       // Sort: items with orden first (ascending), then items without orden by created_at
@@ -362,11 +368,12 @@ export default function InstallationsAdmin() {
       if (dbError) throw dbError;
 
       // Optimized: Add new items to state instead of refetching
-      const newInstallations: Installation[] = records.map((record, index) => ({
-        id: Date.now() + index, // Temporary ID, will be updated on next fetch
-        img_insta: record.img_insta,
-        created_at: record.created_at,
-        orden: record.orden
+      const newInstallations: Installation[] = records.map((record: Record<string, unknown>, index: number) => ({
+        id: Date.now() + index,
+        img_insta: (record.img_insta as string) ?? null,
+        created_at: (record.created_at as string) ?? null,
+        nombre_imagen: null,
+        orden: (record.orden as number) ?? null
       }));
 
       setInstallations(prev => [...newInstallations, ...prev]);
