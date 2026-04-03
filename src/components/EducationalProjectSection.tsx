@@ -83,25 +83,33 @@ export default function EducationalProjectSection() {
   useEffect(() => {
     const fetchInstallations = async () => {
       try {
-        let { data, error } = await supabase
+        let data: Record<string, unknown>[] | null = null;
+        let error: { message?: string } | null = null;
+
+        const r1 = await supabase
           .from('instalaciones')
           .select('id, img_insta, created_at, nombre_imagen, orden')
           .order('created_at', { ascending: false });
+        data = r1.data as Record<string, unknown>[] | null;
+        error = r1.error;
 
         if (error && (error.message?.includes('nombre_imagen') || error.message?.includes('orden') || error.message?.includes('does not exist'))) {
-          let result = await supabase
+          const r2 = await supabase
             .from('instalaciones')
             .select('id, img_insta, created_at, orden')
             .order('created_at', { ascending: false });
 
-          if (result.error && (result.error.message?.includes('orden') || result.error.message?.includes('does not exist'))) {
-            result = await supabase
+          if (r2.error && (r2.error.message?.includes('orden') || r2.error.message?.includes('does not exist'))) {
+            const r3 = await supabase
               .from('instalaciones')
               .select('id, img_insta, created_at')
               .order('created_at', { ascending: false });
+            data = r3.data as Record<string, unknown>[] | null;
+            error = r3.error;
+          } else {
+            data = r2.data as Record<string, unknown>[] | null;
+            error = r2.error;
           }
-          data = result.data;
-          error = result.error;
         }
 
         if (error) throw error;
