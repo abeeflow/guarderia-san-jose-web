@@ -3,12 +3,13 @@ name: Build & Push
 on:
   push:
     branches: [main]
+    paths-ignore: ['helm/**']
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -41,3 +42,12 @@ jobs:
             VITE_SUPABASE_URL=${{ vars.VITE_SUPABASE_URL }}
             VITE_SUPABASE_ANON_KEY=${{ vars.VITE_SUPABASE_ANON_KEY }}
             VITE_WHATSAPP_NUMBER=${{ vars.VITE_WHATSAPP_NUMBER }}
+
+      - name: Update Helm tag
+        run: |
+          sed -i "s/tag: .*/tag: '1.0.${{ github.run_number }}'/" helm/values-production.yaml
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add helm/values-production.yaml
+          git commit -m "ci: update tag to 1.0.${{ github.run_number }} [skip ci]"
+          git push
