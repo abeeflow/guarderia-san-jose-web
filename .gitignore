@@ -51,3 +51,4 @@ Thumbs.db
 
 # Optional: Ignore package-lock.json if using pnpm exclusively (commented out by default)
 # package-lock.json
+.claude/
