@@ -45,7 +45,9 @@ jobs:
 
       - name: Read version tag
         id: version
-        run: echo "tag=$(grep 'tag:' helm/values-production.yaml | awk '{print $2}' | tr -d \"'\")" >> $GITHUB_OUTPUT
+        run: |
+          TAG=$(grep 'tag:' helm/values-production.yaml | awk '{print $2}' | tr -d "'")
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Tag image with version
         run: |
