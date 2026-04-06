@@ -43,11 +43,12 @@ jobs:
             VITE_SUPABASE_ANON_KEY=${{ vars.VITE_SUPABASE_ANON_KEY }}
             VITE_WHATSAPP_NUMBER=${{ vars.VITE_WHATSAPP_NUMBER }}
 
-      - name: Update Helm tag
+      - name: Read version tag
+        id: version
+        run: echo "tag=$(grep 'tag:' helm/values-production.yaml | awk '{print $2}' | tr -d \"'\")" >> $GITHUB_OUTPUT
+
+      - name: Tag image with version
         run: |
-          sed -i "s/tag: .*/tag: '1.0.${{ github.run_number }}'/" helm/values-production.yaml
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add helm/values-production.yaml
-          git commit -m "ci: update tag to 1.0.${{ github.run_number }} [skip ci]"
-          git push
+          docker buildx imagetools create \
+            ghcr.io/${{ github.repository }}:${{ github.sha }} \
+            --tag ghcr.io/${{ github.repository }}:${{ steps.version.outputs.tag }}
